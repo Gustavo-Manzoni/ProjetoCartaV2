@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: e3a00ab309ee3484aa036415612d0038
+timeCreated: 1507633770
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 104874
+  packageName: Untitled
+  packageVersion: 1.0
+  assetPath: Assets/Furniture/Demo/stud.mat
+  uploadId: 212176

@@ -1,0 +1,102 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c40f59307c411444b8d7db1d9788da88, type: 3}
+  m_Name: NoirDecorLibrary
+  m_EditorClassIdentifier: Assembly-CSharp::ProjetoCarta.NoirEnv.NoirDecorLibrary
+  entries:
+  - id: arquivo_aco
+    model: {fileID: 919132149155446097, guid: 3122ec8bc9562be4bb1dd433ead14c28, type: 3}
+    child: 
+    material: {fileID: 0}
+    frontYaw: 0
+    shelves: []
+  - id: estante_livros
+    model: {fileID: 919132149155446097, guid: 27ff78f6439f05742ac4f96db70589c4, type: 3}
+    child: book shelf
+    material: {fileID: 0}
+    frontYaw: 0
+    shelves:
+    - 0.02
+    - 0.15
+    - 0.29
+    - 0.44
+    - 0.58
+    - 0.72
+    - 0.87
+  - id: estante_alta
+    model: {fileID: 919132149155446097, guid: 27ff78f6439f05742ac4f96db70589c4, type: 3}
+    child: closet02
+    material: {fileID: 0}
+    frontYaw: 0
+    shelves:
+    - 0.07
+    - 0.24
+    - 0.39
+    - 0.53
+    - 0.68
+    - 0.83
+    - 1
+  - id: estante_media
+    model: {fileID: 919132149155446097, guid: 27ff78f6439f05742ac4f96db70589c4, type: 3}
+    child: closet
+    material: {fileID: 0}
+    frontYaw: 0
+    shelves:
+    - 0.07
+    - 0.41
+    - 0.61
+    - 0.8
+    - 1
+  - id: estante_baixa
+    model: {fileID: 919132149155446097, guid: 27ff78f6439f05742ac4f96db70589c4, type: 3}
+    child: closet004
+    material: {fileID: 0}
+    frontYaw: 0
+    shelves:
+    - 0.18
+    - 0.69
+  - id: gaveteiro
+    model: {fileID: 919132149155446097, guid: 27ff78f6439f05742ac4f96db70589c4, type: 3}
+    child: Small closet
+    material: {fileID: 0}
+    frontYaw: 0
+    shelves: []
+  - id: comoda
+    model: {fileID: 919132149155446097, guid: 4e31fba792f433f4480512e6fba01a84, type: 3}
+    child: 
+    material: {fileID: 2100000, guid: 3a16a2ad21b865e4eb30d392c20e2c4c, type: 2}
+    frontYaw: -90
+    shelves: []
+  - id: mesa_antiga
+    model: {fileID: 919132149155446097, guid: 4692b232e3e55e3428356e4e34732a56, type: 3}
+    child: 
+    material: {fileID: 2100000, guid: b14486a6a91dba24db69ad4c708a52ae, type: 2}
+    frontYaw: -90
+    shelves: []
+  - id: caixote
+    model: {fileID: 43495166965369930, guid: a93f2d54ae2724341b78460bf117b25c, type: 3}
+    child: 
+    material: {fileID: 0}
+    frontYaw: 0
+    shelves: []
+  - id: quadro_cortica
+    model: {fileID: 6879153213959501807, guid: a715b77c3c0d3b44e921282c251f771b, type: 3}
+    child: 
+    material: {fileID: 0}
+    frontYaw: 0
+    shelves: []
+  - id: cadeira_couro
+    model: {fileID: 1174173930472648, guid: 205ef557736d4c945a550949ebe94589, type: 3}
+    child: 
+    material: {fileID: 2100000, guid: e76cc52c9002a9e4ba4635d3293aa0af, type: 2}
+    frontYaw: 0
+    shelves: []

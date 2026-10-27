@@ -1,0 +1,4 @@
+repository "Jogo Carta/Jogo Carta@4673845215673@cloud"
+  path "/"
+    br "/main"
+    co "/main"

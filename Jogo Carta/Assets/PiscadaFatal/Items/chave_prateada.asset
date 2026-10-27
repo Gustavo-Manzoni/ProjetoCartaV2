@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ced30018903269747a9fb3fbdd2041ff, type: 3}
+  m_Name: chave_prateada
+  m_EditorClassIdentifier: Assembly-CSharp::ProjetoCarta.Inventory.InventoryItemDefinition
+  id: chave_prateada
+  displayName: Chave prateada
+  description: "Pequena e brilhante. Abre algum ba\xFA."
+  icon: {fileID: 21300000, guid: e36de806b5d9ca94087051eaa3d0e9ce, type: 3}
+  iconPositionOffset: {x: 0, y: 0}
+  iconLocalEulerAngles: {x: 0, y: 0, z: 0}
+  iconLocalScale: {x: 1, y: 1, z: 1}
+  equippedLocalPosition: {x: -0.0065853386, y: 0.0077307383, z: 0.017830912}
+  equippedLocalEulerAngles: {x: 45.486485, y: 68.5513, z: 253.22412}
+  equippedLocalScale: {x: 0.41278622, y: 0.41278625, z: 0.41278636}
+  actions: []

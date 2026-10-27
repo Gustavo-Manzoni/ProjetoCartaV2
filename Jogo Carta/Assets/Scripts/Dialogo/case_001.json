@@ -1,0 +1,36 @@
+{
+  "caseId": "case_001",
+  "caseName": "O Caso do Relogio Quebrado",
+  "introLines": [
+    "Na noite de 12 de marco, um roubo foi registrado na Joalheria Central.",
+    "O acusado, Joao Pereira, foi encontrado a poucos metros do local.",
+    "As evidencias sao contraditorias e cabe a voce, Excelencia, decidir o destino dele."
+  ],
+  "options": [
+    {
+      "id": "nome",
+      "label": "Qual e o seu nome completo?",
+      "response": "Meu nome e Joao Pereira, Excelencia. Trabalho como relojoeiro ha 15 anos."
+    },
+    {
+      "id": "local_crime",
+      "label": "Onde voce estava na data do crime?",
+      "response": "Eu estava a caminho de casa. Passei perto da joalheria, mas nao entrei."
+    },
+    {
+      "id": "alibi",
+      "label": "Alguem pode confirmar o que voce diz?",
+      "response": "Minha esposa pode confirmar que cheguei em casa por volta das 23h."
+    },
+    {
+      "id": "motivo",
+      "label": "Por que voce estava perto da joalheria a essa hora?",
+      "response": "Eu tinha acabado de sair do meu turno na oficina, que fica na mesma rua."
+    }
+  ],
+  "verdictText": "Voce ouviu o testemunho do acusado. As evidencias sao circunstanciais, mas a decisao final e sua.",
+  "verdictOptions": {
+    "condemnLabel": "Condenar",
+    "absolveLabel": "Absolver"
+  }
+}

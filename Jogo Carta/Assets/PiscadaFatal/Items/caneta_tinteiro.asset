@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ced30018903269747a9fb3fbdd2041ff, type: 3}
+  m_Name: caneta_tinteiro
+  m_EditorClassIdentifier: Assembly-CSharp::ProjetoCarta.Inventory.InventoryItemDefinition
+  id: caneta_tinteiro
+  displayName: Caneta-tinteiro
+  description: "A caneta que assina senten\xE7as. A tinta ainda est\xE1 fresca."
+  icon: {fileID: 21300000, guid: ae24b451b28b8604f8f9e193dd2494d3, type: 3}
+  iconPositionOffset: {x: 0, y: 0}
+  iconLocalEulerAngles: {x: 0, y: 0, z: 0}
+  iconLocalScale: {x: 1, y: 1, z: 1}
+  equippedLocalPosition: {x: 0.00000004156229, y: 0.000000052717244, z: -0.00000008738936}
+  equippedLocalEulerAngles: {x: 295.1982, y: 189.20508, z: 62.98573}
+  equippedLocalScale: {x: 2.320903, y: 2.320903, z: 2.320903}
+  actions: []

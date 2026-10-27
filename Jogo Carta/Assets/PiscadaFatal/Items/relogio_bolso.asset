@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ced30018903269747a9fb3fbdd2041ff, type: 3}
+  m_Name: relogio_bolso
+  m_EditorClassIdentifier: Assembly-CSharp::ProjetoCarta.Inventory.InventoryItemDefinition
+  id: relogio_bolso
+  displayName: "Rel\xF3gio de bolso"
+  description: "Veio do fundo do po\xE7o. Os ponteiros tremem, mas n\xE3o andam."
+  icon: {fileID: 21300000, guid: f0adff3833dd8114ca5f28fdcf823edb, type: 3}
+  iconPositionOffset: {x: 0, y: 0}
+  iconLocalEulerAngles: {x: 0, y: 0, z: 0}
+  iconLocalScale: {x: 1, y: 1, z: 1}
+  equippedLocalPosition: {x: -0.010772697, y: -0.004682409, z: 0.0053555523}
+  equippedLocalEulerAngles: {x: 343.517, y: 97.979576, z: 288.20044}
+  equippedLocalScale: {x: 1.9077048, y: 1.9077048, z: 1.9077044}
+  actions: []
