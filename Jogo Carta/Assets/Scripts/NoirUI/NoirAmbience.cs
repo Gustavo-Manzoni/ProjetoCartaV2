@@ -56,8 +56,8 @@ namespace ProjetoCarta.NoirUI
 
             beds = new AudioSource[3];
             targets = new float[3];
-            // Sem piscada (menu), o primeiro leito vira a chuva na janela do escritorio do detetive.
-            beds[0] = CreateLoop(blink != null ? "Amb_Escritorio" : "Amb_Menu");
+            // Amb_Escritorio tem um tique de relogio gravado que soava do nada; o escritorio usa a chuva do menu.
+            beds[0] = CreateLoop("Amb_Menu");
             beds[1] = CreateLoop("Amb_Camara");
             beds[2] = CreateLoop("Amb_Administrativo");
             chairHum = CreateLoop("Amb_Cadeira");

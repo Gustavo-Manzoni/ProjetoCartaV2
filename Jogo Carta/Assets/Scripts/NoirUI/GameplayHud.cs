@@ -431,9 +431,6 @@ namespace ProjetoCarta.NoirUI
                 reticle.rectTransform.DOScale(reticleBaseScale * (visible ? 1.35f : 1f), 0.22f).SetEase(Ease.OutBack).SetUpdate(true);
                 reticle.DOColor(visible ? NoirTheme.Amber : reticleBaseColor, 0.15f).SetUpdate(true);
             }
-
-            if (visible)
-                NoirAudio.Play(NoirSfx.Tick, 0.5f, 1.2f);
         }
 
         // ------------------------------------------------------------ avisos de item

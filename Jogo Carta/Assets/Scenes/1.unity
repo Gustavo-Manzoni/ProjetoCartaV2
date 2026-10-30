@@ -35451,15 +35451,13 @@ MonoBehaviour:
   documentTexture: {fileID: 2800000, guid: 9b231ff7d2ca252408d98454f97ec74b, type: 3}
   readThought: "Tr\xEAs hor\xE1rios anotados com cuidado demais para uma simples
     escala."
-  body: "ANEXO AO PROCESSO 347/57 \u2014 GUINCHO DO PO\xC7O DO P\xC1TIO\n21 de novembro
-    de 1958, 07:15\n\nEm 18/11, por ordem do diretor, a manivela foi tirada do guincho:
-    o rangido chegava \xE0 c\xE2mara durante as execu\xE7\xF5es.\nGuardei-a nesta
-    sala, na caixa de manuten\xE7\xE3o perto do radiador, e acertei a trava pelo meu
-    rel\xF3gio de servi\xE7o: as horas em que bato o ponto, da primeira \xE0 \xFAltima.
-    3h00, 7h30 e 10h30.\n\nNa noite de 20/11 ca\xEDram no po\xE7o pap\xE9is e um
-    objeto de metal. Ficaram l\xE1.\n\nOsvaldo, mec\xE2nico do p\xE1tio"
+  body: "GUINCHO DO PO\xC7O\n\nDesde a chuva, o balde n\xE3o desce com a trava
+    solta por qualquer um. Ela s\xF3 abre quando o rel\xF3gio marca:\n3h00 \xB7 7h30 \xB7
+    10h30\n\nOs ponteiros andam de uma hora e meia em uma hora e meia.\n\nA manivela
+    est\xE1 na caixa perto do radiador. Guardem depois de usar.\n\nOsvaldo"
   bodyFont: {fileID: 11400000, guid: 56b1a46ef2d2dcb4f8cf3d83de8ba976, type: 2}
-  bodyFontSize: 28
+  bodyFontSize: 36
+  centerText: 1
   bodyArea:
     serializedVersion: 2
     x: 0.11

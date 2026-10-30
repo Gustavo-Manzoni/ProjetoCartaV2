@@ -29,6 +29,8 @@ namespace ProjetoCarta.Puzzles
         [Tooltip("Fonte do texto (ex.: manuscrita para bilhetes). Vazio = fonte da UI.")]
         [SerializeField] private TMP_FontAsset bodyFont;
         [SerializeField, Min(8f)] private float bodyFontSize = 30f;
+        [Tooltip("Centraliza o texto na folha, na horizontal e na vertical.")]
+        [SerializeField] private bool centerText;
         [Tooltip("Area do texto dentro do papel (0..1, origem embaixo a esquerda).")]
         [SerializeField] private Rect bodyArea = new(0.11f, 0.08f, 0.78f, 0.84f);
 
@@ -200,7 +202,7 @@ namespace ProjetoCarta.Puzzles
             text.font = bodyFont != null ? bodyFont : NoirTheme.Font();
             text.text = Loc.T(body.Replace("\r\n", "\n").Trim());
             text.color = InkOnPaper;
-            text.alignment = TextAlignmentOptions.TopLeft;
+            text.alignment = centerText ? TextAlignmentOptions.Center : TextAlignmentOptions.TopLeft;
             text.textWrappingMode = TextWrappingModes.Normal;
             text.enableAutoSizing = true;
             text.fontSizeMax = bodyFontSize;
