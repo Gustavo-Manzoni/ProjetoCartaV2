@@ -699,7 +699,7 @@ namespace ProjetoCarta.Inventory.UI
                 int index = Mathf.Clamp(segment - 1, 0, inventory.Items.Count - 1);
                 InventoryItemDefinition item = inventory.Items.Count > 0 ? inventory.Items[index] : null;
                 name = item != null ? Loc.T(item.DisplayName) : string.Empty;
-                description = item != null && !string.IsNullOrEmpty(item.Description) ? Loc.T(item.Description) : string.Empty;
+                description = string.Empty; // itens so tem titulo
                 if (item != null && equipped != null && equipped.Id == item.Id)
                     tag = Loc.T("NA MÃO");
             }

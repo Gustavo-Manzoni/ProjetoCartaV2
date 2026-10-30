@@ -31344,14 +31344,14 @@ MonoBehaviour:
   onFocusExited:
     m_PersistentCalls:
       m_Calls: []
-  requiredItem: {fileID: 0}
-  lockedByPuzzle: 1
+  requiredItem: {fileID: 11400000, guid: 76867b4f8cf7a8448995f8a64d028e1a, type: 2}
+  lockedByPuzzle: 0
   consumeItemOnUnlock: 1
   lockedPrompt: "Arm\xE1rio trancado"
-  unlockPrompt: Destrancar
+  unlockPrompt: Destrancar com a chave amarela
   lockedThought: "Trancado. Esta fechadura \xE9 de lat\xE3o, amarelada."
   wrongItemThought: "Essa chave n\xE3o parece servir aqui."
-  unlockedThought: 
+  unlockedThought:
   openPrompt: "Abrir a porta do arm\xE1rio"
   closePrompt: "Fechar a porta do arm\xE1rio"
   startsOpen: 0
@@ -31363,7 +31363,20 @@ MonoBehaviour:
   contentsAvailableAt: 0.7
   onUnlocked:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 637188275}
+        m_TargetAssemblyTypeName: ProjetoCarta.Interaction.OpenableInteractable,
+          Assembly-CSharp
+        m_MethodName: Unlock
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName:
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument:
+          m_BoolArgument: 0
+        m_CallState: 2
   onOpened:
     m_PersistentCalls:
       m_Calls: []
@@ -35441,7 +35454,7 @@ MonoBehaviour:
   body: "ANEXO AO PROCESSO 347/57 \u2014 GUINCHO DO PO\xC7O DO P\xC1TIO\n21 de novembro
     de 1958, 07:15\n\nEm 18/11, por ordem do diretor, a manivela foi tirada do guincho:
     o rangido chegava \xE0 c\xE2mara durante as execu\xE7\xF5es.\nGuardei-a nesta
-    sala, na caixa de manuten\xE7\xE3o perto da janela, e acertei a trava pelo meu
+    sala, na caixa de manuten\xE7\xE3o perto do radiador, e acertei a trava pelo meu
     rel\xF3gio de servi\xE7o: as horas em que bato o ponto, da primeira \xE0 \xFAltima.
     3h00, 7h30 e 10h30.\n\nNa noite de 20/11 ca\xEDram no po\xE7o pap\xE9is e um
     objeto de metal. Ficaram l\xE1.\n\nOsvaldo, mec\xE2nico do p\xE1tio"
@@ -35450,9 +35463,9 @@ MonoBehaviour:
   bodyArea:
     serializedVersion: 2
     x: 0.11
-    y: 0.05
+    y: 0.08
     width: 0.78
-    height: 0.53
+    height: 0.84
 --- !u!65 &1792865707
 BoxCollider:
   m_ObjectHideFlags: 0

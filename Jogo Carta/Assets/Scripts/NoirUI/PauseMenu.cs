@@ -110,6 +110,7 @@ namespace ProjetoCarta.NoirUI
             dim.raycastTarget = true;
 
             emblemImage = NewImage("Emblem", root.transform, NoirTheme.GetSprite("noir_eye"), NoirTheme.WithAlpha(NoirTheme.Paper, 0.07f));
+            emblemImage.enabled = false; // sem o olho de fundo
             emblem = emblemImage.rectTransform;
             Center(emblem, new Vector2(0, 10), new Vector2(900, 900));
 

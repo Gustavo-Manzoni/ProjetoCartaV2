@@ -101,10 +101,16 @@ namespace ProjetoCarta.NoirEnv
             string key = $"A|{tex}|{tint}";
             if (Cache.TryGetValue(key, out Material m) && m != null) return m;
 
-            Shader s = Shader.Find("Universal Render Pipeline/Particles/Unlit")
-                       ?? Shader.Find("Legacy Shaders/Particles/Additive")
-                       ?? Shader.Find("Sprites/Default");
-            m = new Material(s) { name = "NoirEnvAdd_" + tex };
+            // O template em Resources garante que o shader (e a variante transparente) entre no build;
+            // Shader.Find sozinho voltava null no player e caia no Sprites/Default, que desenhava quadrados brancos.
+            Material template = Resources.Load<Material>("NoirEnv/NoirAdditiveTemplate");
+            if (template != null)
+                m = new Material(template);
+            else
+                m = new Material(Shader.Find("Universal Render Pipeline/Particles/Unlit")
+                                 ?? Shader.Find("Legacy Shaders/Particles/Additive")
+                                 ?? Shader.Find("Sprites/Default"));
+            m.name = "NoirEnvAdd_" + tex;
             Texture2D t = Tex(tex);
             if (t != null) { m.SetTexture("_BaseMap", t); m.SetTexture("_MainTex", t); }
             m.SetColor("_BaseColor", tint);

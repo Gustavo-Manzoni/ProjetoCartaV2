@@ -159,7 +159,7 @@ namespace ProjetoCarta.NoirUI
 
         private void BuildFooter()
         {
-            string Key(string k) => "<color=#DEA846>" + k + "</color> ";
+            string Key(string k) => "<color=#E6BE3C>" + k + "</color> ";
             string text = Key("W/S") + Loc.T("ESCOLHER") + "      " +
                           Key("A/D") + Loc.T("AJUSTAR") + "      " +
                           Key("Q/E") + Loc.T("TROCAR ABA") + "      " +
@@ -252,12 +252,6 @@ namespace ProjetoCarta.NoirUI
                 },
                 null);
 
-            AddChoice(t, "QUALIDADE", "Sombras, luzes e detalhes. Baixe se o jogo engasgar.",
-                QualityLabels,
-                () => GameSettings.QualityLevel,
-                GameSettings.SetQuality,
-                null, false);
-
             AddChoice(t, "SUAVIZAÇÃO DE BORDAS", "Apara os serrilhados das bordas dos objetos.",
                 () => new[] { "DESLIGADA", "FXAA", "SMAA" },
                 () => GameSettings.AntiAliasing,
@@ -328,9 +322,6 @@ namespace ProjetoCarta.NoirUI
             AddInfo(t, "ANDAR", "W A S D");
             AddInfo(t, "OLHAR", Loc.T("MOUSE"));
             AddInfo(t, "CORRER", "SHIFT");
-            AddInfo(t, "AGACHAR", "CTRL");
-            AddInfo(t, "PULAR", Loc.T("ESPAÇO"));
-            AddInfo(t, "ZOOM", Loc.T("BOTÃO DO MEIO (SEGURAR)"));
             AddInfo(t, "INTERAGIR", Loc.T("CLIQUE ESQUERDO"));
             AddInfo(t, "PISCAR", Loc.T("CLIQUE DIREITO"));
             AddInfo(t, "INVENTÁRIO", Loc.T("TAB (SEGURAR)"));
@@ -542,23 +533,6 @@ namespace ProjetoCarta.NoirUI
             };
         }
 
-        private static string[] QualityLabels()
-        {
-            string[] names = QualitySettings.names;
-            string[] labels = new string[names.Length];
-            for (int i = 0; i < names.Length; i++)
-            {
-                labels[i] = names[i] switch
-                {
-                    "Mobile" => "BAIXA",
-                    "PC" => "ALTA",
-                    _ => names[i].ToUpperInvariant()
-                };
-            }
-
-            return labels;
-        }
-
         private static string[] FpsLabels()
         {
             string[] labels = new string[GameSettings.FpsLimits.Length];
@@ -744,13 +718,9 @@ namespace ProjetoCarta.NoirUI
 
         private void SetDescription(string pt)
         {
+            // Sem a descricao embaixo da opcao: o texto fica sempre vazio.
             description.DOKill();
-            description.text = string.IsNullOrEmpty(pt) ? string.Empty : Loc.T(pt);
-            description.maxVisibleCharacters = 0;
-            int length = description.text.Length;
-            // Datilografado rapido, como uma nota sendo batida a maquina.
-            DOTween.To(() => description.maxVisibleCharacters, v => description.maxVisibleCharacters = v, length,
-                Mathf.Min(0.9f, length * 0.014f)).SetEase(Ease.Linear).SetUpdate(true).SetTarget(description);
+            description.text = string.Empty;
         }
 
         // ------------------------------------------------------------ entrada

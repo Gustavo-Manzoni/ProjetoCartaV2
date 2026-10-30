@@ -22,7 +22,7 @@ namespace ProjetoCarta.NoirUI
         private BlinkSceneController blink;
         private CanvasGroup group;
         private RectTransform panel;
-        private Image rightButton, glow;
+        
         private RectTransform lidTop, lidBottom;
         private float timer, lidPhase;
         private bool shown, done;
@@ -71,45 +71,26 @@ namespace ProjetoCarta.NoirUI
 
             // Sombra macia atras do bloco: o texto continua legivel sobre o quadro iluminado.
             Image shade = Img("Sombra", panel, NoirTheme.GetSprite("noir_dust"), new Color(0f, 0f, 0f, 0.78f));
-            shade.rectTransform.anchoredPosition = new Vector2(20f, 0f);
+            shade.rectTransform.anchoredPosition = Vector2.zero;
             shade.rectTransform.sizeDelta = new Vector2(1250f, 520f);
 
-            glow = Img("Brilho", panel, NoirTheme.GetSprite("noir_dust"), NoirTheme.WithAlpha(NoirTheme.Amber, 0f));
-            glow.rectTransform.anchoredPosition = new Vector2(-250f, 10f);
-            glow.rectTransform.sizeDelta = new Vector2(260f, 260f);
 
-            // Mouse desenhado: corpo, dois botoes e o fio.
-            Color ink = new(0.86f, 0.82f, 0.74f);
-            Image cable = Img("Fio", panel, null, ink);
-            cable.rectTransform.anchoredPosition = new Vector2(-250f, 92f);
-            cable.rectTransform.sizeDelta = new Vector2(4f, 40f);
-            Image body = Img("Corpo", panel, null, ink);
-            body.rectTransform.anchoredPosition = new Vector2(-250f, 0f);
-            body.rectTransform.sizeDelta = new Vector2(96f, 150f);
-            Image inner = Img("Corpo_Dentro", body.rectTransform, null, new Color(0.06f, 0.05f, 0.05f, 0.96f));
-            inner.rectTransform.sizeDelta = new Vector2(88f, 142f);
-            Image left = Img("Botao_Esq", body.rectTransform, null, new Color(0.18f, 0.16f, 0.15f));
-            left.rectTransform.anchoredPosition = new Vector2(-22f, 38f);
-            left.rectTransform.sizeDelta = new Vector2(40f, 58f);
-            rightButton = Img("Botao_Dir", body.rectTransform, null, NoirTheme.Amber);
-            rightButton.rectTransform.anchoredPosition = new Vector2(22f, 38f);
-            rightButton.rectTransform.sizeDelta = new Vector2(40f, 58f);
 
             TMP_Text title = Text("Titulo", panel, Loc.T("PISQUE"), 92f, NoirTheme.Paper, 18f);
-            title.alignment = TextAlignmentOptions.Left;
-            title.rectTransform.anchoredPosition = new Vector2(160f, 52f);
-            title.rectTransform.sizeDelta = new Vector2(640f, 110f);
+            title.alignment = TextAlignmentOptions.Center;
+            title.rectTransform.anchoredPosition = new Vector2(0f, 52f);
+            title.rectTransform.sizeDelta = new Vector2(840f, 110f);
 
-            TMP_Text key = Text("Tecla", panel, "<color=#DEA846>[" + Loc.T("CLIQUE DIREITO") + "]</color>", 30f, NoirTheme.Paper, 6f);
-            key.alignment = TextAlignmentOptions.Left;
-            key.rectTransform.anchoredPosition = new Vector2(160f, -18f);
-            key.rectTransform.sizeDelta = new Vector2(640f, 44f);
+            TMP_Text key = Text("Tecla", panel, "<color=#E6BE3C>[" + Loc.T("CLIQUE DIREITO") + "]</color>", 30f, NoirTheme.Paper, 6f);
+            key.alignment = TextAlignmentOptions.Center;
+            key.rectTransform.anchoredPosition = new Vector2(0f, -18f);
+            key.rectTransform.sizeDelta = new Vector2(840f, 44f);
 
             TMP_Text sub = Text("Sub", panel, Loc.T("Feche os olhos e o momento muda."), 26f, NoirTheme.Ash, 2f);
-            sub.alignment = TextAlignmentOptions.Left;
+            sub.alignment = TextAlignmentOptions.Center;
             sub.fontStyle = FontStyles.Italic;
-            sub.rectTransform.anchoredPosition = new Vector2(160f, -66f);
-            sub.rectTransform.sizeDelta = new Vector2(640f, 44f);
+            sub.rectTransform.anchoredPosition = new Vector2(0f, -66f);
+            sub.rectTransform.sizeDelta = new Vector2(840f, 44f);
         }
 
         private void Update()
@@ -134,12 +115,6 @@ namespace ProjetoCarta.NoirUI
 
             group.alpha = Mathf.MoveTowards(group.alpha, want ? 1f : 0f, Time.unscaledDeltaTime * (want ? 1.2f : 3f));
             if (!shown) return;
-
-            // Botao direito pulsando e brilho atras do mouse.
-            float t = Time.unscaledTime;
-            float pulse = 0.5f + 0.5f * Mathf.Sin(t * 5.2f);
-            rightButton.color = Color.Lerp(NoirTheme.Amber * 0.55f, NoirTheme.Amber * 1.25f, pulse);
-            glow.color = NoirTheme.WithAlpha(NoirTheme.Amber, 0.08f + 0.14f * pulse);
 
             // Palpebras pesando: a cada ~3 s descem um pouco e voltam, como quem quase pisca.
             lidPhase += Time.unscaledDeltaTime;

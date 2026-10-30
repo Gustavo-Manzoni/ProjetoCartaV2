@@ -10,7 +10,7 @@ namespace ProjetoCarta.NoirUI
         public static readonly Color Ink = new Color32(12, 12, 14, 255);
         public static readonly Color Paper = new Color32(232, 224, 200, 255);
         public static readonly Color Ash = new Color32(190, 186, 172, 255);
-        public static readonly Color Amber = new Color32(222, 168, 70, 255);
+        public static readonly Color Amber = new Color32(230, 190, 60, 255);
         public static readonly Color Blood = new Color32(168, 52, 56, 255);
         public static readonly Color Moon = new Color32(122, 156, 168, 255);
 

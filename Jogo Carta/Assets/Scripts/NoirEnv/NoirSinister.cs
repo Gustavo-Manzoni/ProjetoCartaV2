@@ -5,7 +5,7 @@ namespace ProjetoCarta.NoirEnv
 {
     /// <summary>
     /// Texturas e materiais da camada sinistra, gerados em codigo: manchas de infiltracao, mofo, marcas de dias
-    /// riscadas, maos arrastadas, arranhoes, queimado, silhueta, chuva no vidro e o degrade dos cones de luz.
+    /// riscadas, maos arrastadas, arranhoes, queimado, silhueta e o degrade dos cones de luz.
     /// As texturas de "multiplicar" sao brancas onde a parede fica intacta: funcionam com ou sem a variante do
     /// shader que usa o alfa.
     /// </summary>
@@ -389,40 +389,6 @@ namespace ProjetoCarta.NoirEnv
             return px;
         });
 
-        /// <summary>Escorridos de chuva no vidro (repete na vertical para rolar).</summary>
-        public static Texture2D Rain() => Make("rain", 128, 256, t =>
-        {
-            int w = t.width, h = t.height;
-            Color[] px = new Color[w * h];
-            for (int i = 0; i < px.Length; i++) px[i] = new Color(1f, 1f, 1f, 0f);
-            System.Random rng = new(5);
-            for (int d = 0; d < 70; d++)
-            {
-                int cx = rng.Next(w);
-                int y0 = rng.Next(h);
-                int len = 10 + rng.Next(70);
-                float a = 0.25f + (float)rng.NextDouble() * 0.6f;
-                for (int k = 0; k < len; k++)
-                {
-                    int y = (y0 - k + h) % h;
-                    float fade = 1f - k / (float)len;
-                    int x = (cx + (int)((Mathf.PerlinNoise(cx, k * 0.05f) - 0.5f) * 4f) + w) % w;
-                    int i = y * w + x;
-                    px[i].a = Mathf.Max(px[i].a, a * fade);
-                }
-
-                // Gota na ponta.
-                for (int dx = -1; dx <= 1; dx++)
-                    for (int dy = -1; dy <= 1; dy++)
-                    {
-                        int i = ((y0 + dy + h) % h) * w + (cx + dx + w) % w;
-                        px[i].a = Mathf.Max(px[i].a, a);
-                    }
-            }
-
-            return px;
-        }, true);
-
         /// <summary>Degrade do cone de luz: forte junto a lampada e sumindo para baixo.</summary>
         public static Texture2D Beam() => Make("beam", 32, 128, t =>
         {
@@ -497,83 +463,6 @@ namespace ProjetoCarta.NoirEnv
         private void OnDestroy()
         {
             if (material != null) Destroy(material);
-        }
-    }
-
-    /// <summary>
-    /// Tempestade la fora: relampagos duplos estouram a luz da lua (a persiana risca a sala inteira), a janela
-    /// fica branca e a sala leva um banho azulado. As vezes, no clarao, ha um homem de chapeu parado do lado de fora.
-    /// </summary>
-    public sealed class NoirLightning : MonoBehaviour
-    {
-        public Light moon;
-        public Light flash;
-        public Renderer window;
-        public Color windowEmission;
-        public GameObject watcher;
-        public float strength = 1f;
-
-        private float moonBase, next, sinceWatcher = -30f;
-        private MaterialPropertyBlock block;
-
-        private void Start()
-        {
-            block = new MaterialPropertyBlock();
-            if (moon != null) moonBase = moon.intensity;
-            if (flash != null) flash.intensity = 0f;
-            if (watcher != null) watcher.SetActive(false);
-            next = Random.Range(6f, 12f);
-        }
-
-        private void OnDisable()
-        {
-            // A piscada desliga a sala no meio do clarao: volta tudo ao normal.
-            if (watcher != null) watcher.SetActive(false);
-            Apply(0f);
-            StopAllCoroutines();
-        }
-
-        private void Update()
-        {
-            next -= Time.deltaTime;
-            sinceWatcher += Time.deltaTime;
-            if (next > 0f) return;
-            next = Random.Range(9f, 22f);
-            StartCoroutine(Strike());
-        }
-
-        private System.Collections.IEnumerator Strike()
-        {
-            bool show = watcher != null && sinceWatcher > 40f && Random.value < 0.35f;
-            if (show) { watcher.SetActive(true); sinceWatcher = 0f; }
-
-            int pulses = Random.Range(2, 4);
-            for (int p = 0; p < pulses; p++)
-            {
-                float peak = p == 0 ? Random.Range(0.6f, 0.85f) : Random.Range(0.85f, 1f);
-                float dur = Random.Range(0.05f, 0.11f);
-                for (float t = 0f; t < dur; t += Time.deltaTime) { Apply(peak); yield return null; }
-                float gap = Random.Range(0.05f, 0.16f);
-                for (float t = 0f; t < gap; t += Time.deltaTime) { Apply(peak * (1f - t / gap) * 0.25f); yield return null; }
-            }
-
-            // Pos-luz que morre devagar.
-            for (float t = 0f; t < 0.6f; t += Time.deltaTime) { Apply(0.3f * (1f - t / 0.6f)); yield return null; }
-            Apply(0f);
-            if (watcher != null) watcher.SetActive(false);
-        }
-
-        private void Apply(float k)
-        {
-            k *= strength;
-            if (moon != null) moon.intensity = moonBase * (1f + k * 7f);
-            if (flash != null) flash.intensity = k * 14f;
-            if (window != null && block != null)
-            {
-                window.GetPropertyBlock(block);
-                block.SetColor("_EmissionColor", windowEmission * (1f + k * 6f));
-                window.SetPropertyBlock(block);
-            }
         }
     }
 

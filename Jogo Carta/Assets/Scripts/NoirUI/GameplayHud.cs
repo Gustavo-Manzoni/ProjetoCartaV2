@@ -37,7 +37,6 @@ namespace ProjetoCarta.NoirUI
         private bool ownPrompt;
         private RectTransform promptRoot;
         private Image promptShade;
-        private Image promptDiamond;
         private Image promptLine;
         private bool promptVisible;
         private bool promptBlocked;
@@ -172,7 +171,7 @@ namespace ProjetoCarta.NoirUI
                 return;
             }
 
-            promptText.color = NoirTheme.Paper;
+            promptText.color = Color.white;
             promptText.characterSpacing = 5f;
             promptText.fontStyle |= FontStyles.UpperCase;
 
@@ -219,15 +218,11 @@ namespace ProjetoCarta.NoirUI
             promptText.outlineWidth = 0.1f;
             promptText.outlineColor = new Color32(0, 0, 0, 160);
 
-            promptDiamond = MakeImage("Losango", promptRoot, null, NoirTheme.Amber);
-            promptDiamond.rectTransform.sizeDelta = new Vector2(10f, 10f);
-            promptDiamond.rectTransform.localRotation = Quaternion.Euler(0f, 0f, 45f);
-
             promptLine = MakeImage("Traco", promptRoot, NoirTheme.GetSprite("noir_divider"), NoirTheme.WithAlpha(NoirTheme.Paper, 0.55f));
             promptLine.rectTransform.anchoredPosition = new Vector2(0f, -27f);
             promptLine.rectTransform.sizeDelta = new Vector2(400f, 16f);
 
-            BuildFocusFrame();
+            // Sem o visor em volta da mira: o prompt de texto basta.
         }
 
         /// <summary>Quatro cantos de visor em volta da mira: fecham sobre o objeto quando ele recebe o foco.</summary>
@@ -297,7 +292,6 @@ namespace ProjetoCarta.NoirUI
         {
             float w = Mathf.Max(80f, promptText.GetPreferredValues(promptText.text).x);
             promptShade.rectTransform.sizeDelta = new Vector2(w + 300f, 120f);
-            promptDiamond.rectTransform.anchoredPosition = new Vector2(-w * 0.5f - 26f, 1f);
             promptLine.rectTransform.sizeDelta = new Vector2(w + 90f, 16f);
         }
 
@@ -305,25 +299,9 @@ namespace ProjetoCarta.NoirUI
         private void ApplyPromptState(bool blocked, bool animate)
         {
             promptBlocked = blocked;
-            Color text = blocked ? NoirTheme.WithAlpha(NoirTheme.Ash, 0.85f) : NoirTheme.Paper;
-            Color diamond = blocked ? NoirTheme.WithAlpha(NoirTheme.Blood, 0.9f) : NoirTheme.Amber;
-            promptText.fontStyle = blocked ? (FontStyles.UpperCase | FontStyles.Italic) : FontStyles.UpperCase;
-
+            promptText.fontStyle = FontStyles.UpperCase;
             promptText.DOKill();
-            promptDiamond.DOKill();
-            promptLine.DOKill();
-            if (animate)
-            {
-                promptText.DOColor(text, 0.2f).SetUpdate(true);
-                promptDiamond.DOColor(diamond, 0.2f).SetUpdate(true);
-                promptLine.DOFade(blocked ? 0.2f : 0.55f, 0.2f).SetUpdate(true);
-            }
-            else
-            {
-                promptText.color = text;
-                promptDiamond.color = diamond;
-                promptLine.color = NoirTheme.WithAlpha(NoirTheme.Paper, blocked ? 0.2f : 0.55f);
-            }
+            promptText.color = Color.white;
         }
 
         /// <summary>Texto novo no prompt: o traco se redesenha do centro e as letras se assentam.</summary>
@@ -338,13 +316,6 @@ namespace ProjetoCarta.NoirUI
             promptText.characterSpacing = fresh ? 16f : 10f;
             DOTween.To(() => promptText.characterSpacing, v => promptText.characterSpacing = v, 6f, 0.35f)
                 .SetEase(Ease.OutCubic).SetUpdate(true).SetTarget(promptText.rectTransform);
-
-            RectTransform d = promptDiamond.rectTransform;
-            d.DOKill();
-            d.localScale = Vector3.zero;
-            d.DOScale(1f, 0.35f).SetEase(Ease.OutBack).SetUpdate(true);
-            d.localRotation = Quaternion.Euler(0f, 0f, -45f);
-            d.DOLocalRotate(new Vector3(0f, 0f, 45f), 0.35f).SetEase(Ease.OutCubic).SetUpdate(true);
 
             if (fresh)
             {
@@ -514,155 +485,59 @@ namespace ProjetoCarta.NoirUI
                 known[kv.Key] = kv.Value;
         }
 
+        /// <summary>Aviso de item: so a foto (polaroide) do item, sem textos nem ficha.</summary>
         private void ShowToast(string header, InventoryItemDefinition item, Color accent)
         {
+            if (item.Icon == null)
+                return;
+
             if (toasts.Count >= 4)
                 RemoveToast(toasts[0], true);
 
             bool used = accent == NoirTheme.Moon;
 
-            // Ficha de evidencia: papel escuro, polaroide torta com o item, carimbo e nome datilografado.
             GameObject go = new("Toast", typeof(RectTransform), typeof(CanvasGroup));
             go.transform.SetParent(toastRoot, false);
             RectTransform rt = (RectTransform)go.transform;
             rt.anchorMin = rt.anchorMax = new Vector2(1f, 1f);
             rt.pivot = new Vector2(1f, 1f);
-            rt.sizeDelta = new Vector2(470f, 112f);
+            rt.sizeDelta = new Vector2(110f, 112f);
             CanvasGroup cg = go.GetComponent<CanvasGroup>();
 
-            GameObject cardGo = new("Ficha", typeof(RectTransform));
-            cardGo.transform.SetParent(rt, false);
-            RectTransform card = (RectTransform)cardGo.transform;
-            Stretch(card);
-            card.pivot = new Vector2(1f, 1f);
-
-            Image shadow = MakeImage("Sombra", card, NoirTheme.GetSprite("noir_glow"), new Color(0f, 0f, 0f, 0.55f));
+            Image shadow = MakeImage("Sombra", rt, NoirTheme.GetSprite("noir_glow"), new Color(0f, 0f, 0f, 0.55f));
             Stretch(shadow.rectTransform);
-            shadow.rectTransform.offsetMin = new Vector2(-50f, -40f);
-            shadow.rectTransform.offsetMax = new Vector2(50f, 40f);
+            shadow.rectTransform.offsetMin = new Vector2(-40f, -34f);
+            shadow.rectTransform.offsetMax = new Vector2(40f, 34f);
 
-            Image paper = MakeImage("Papel", card, null, new Color(0.055f, 0.05f, 0.047f, 0.93f));
-            Stretch(paper.rectTransform);
+            Image photo = MakeImage("Polaroide", rt, null, used ? new Color(0.6f, 0.58f, 0.54f) : NoirTheme.Paper);
+            RectTransform polaroid = photo.rectTransform;
+            polaroid.anchorMin = polaroid.anchorMax = new Vector2(0.5f, 0.5f);
+            polaroid.anchoredPosition = Vector2.zero;
+            polaroid.sizeDelta = new Vector2(76f, 86f);
+            polaroid.localRotation = Quaternion.Euler(0f, 0f, used ? 3f : -5f);
 
-            Image frame = MakeImage("Moldura", card, NoirTheme.GetSprite("noir_btn_normal", 14f), NoirTheme.WithAlpha(NoirTheme.Paper, used ? 0.3f : 0.55f));
-            frame.type = Image.Type.Sliced;
-            frame.pixelsPerUnitMultiplier = 1.4f;
-            Stretch(frame.rectTransform);
+            Image well = MakeImage("Foto", polaroid, null, new Color(0.08f, 0.075f, 0.07f));
+            well.rectTransform.anchoredPosition = new Vector2(0f, 6f);
+            well.rectTransform.sizeDelta = new Vector2(64f, 62f);
 
-            // Barra do tempo restante, encolhendo ate o aviso sair.
-            Image timer = MakeImage("Tempo", card, null, NoirTheme.WithAlpha(accent, 0.7f));
-            timer.rectTransform.anchorMin = new Vector2(0f, 0f);
-            timer.rectTransform.anchorMax = new Vector2(1f, 0f);
-            timer.rectTransform.pivot = new Vector2(0f, 0f);
-            timer.rectTransform.offsetMin = new Vector2(10f, 7f);
-            timer.rectTransform.offsetMax = new Vector2(-10f, 9f);
-
-            float textLeft = 30f;
-            RectTransform polaroid = null;
-            if (item.Icon != null)
-            {
-                Image photo = MakeImage("Polaroide", card, null, used ? new Color(0.6f, 0.58f, 0.54f) : NoirTheme.Paper);
-                polaroid = photo.rectTransform;
-                polaroid.anchorMin = polaroid.anchorMax = new Vector2(0f, 0.5f);
-                polaroid.anchoredPosition = new Vector2(62f, 3f);
-                polaroid.sizeDelta = new Vector2(76f, 86f);
-                polaroid.localRotation = Quaternion.Euler(0f, 0f, used ? 3f : -5f);
-
-                Image well = MakeImage("Foto", polaroid, null, new Color(0.08f, 0.075f, 0.07f));
-                well.rectTransform.anchoredPosition = new Vector2(0f, 6f);
-                well.rectTransform.sizeDelta = new Vector2(64f, 62f);
-
-                Image icon = MakeImage("Icon", well.rectTransform, item.Icon, used ? new Color(0.55f, 0.55f, 0.55f) : Color.white);
-                icon.preserveAspect = true;
-                icon.rectTransform.sizeDelta = new Vector2(56f, 56f);
-                textLeft = 120f;
-            }
-
-            // Carimbo: o cabecalho cai sobre o papel com um baque.
-            GameObject stampGo = new("Carimbo", typeof(RectTransform));
-            stampGo.transform.SetParent(card, false);
-            RectTransform stamp = (RectTransform)stampGo.transform;
-            stamp.anchorMin = stamp.anchorMax = new Vector2(0f, 1f);
-            stamp.pivot = new Vector2(0f, 1f);
-            stamp.anchoredPosition = new Vector2(textLeft, -14f);
-            // Tarja de tinta (fundo tingido + filetes em cima e embaixo): le bem em qualquer tamanho.
-            Image stampFrame = MakeImage("Tinta", stamp, null, NoirTheme.WithAlpha(accent, 0.2f));
-            Stretch(stampFrame.rectTransform);
-            TMP_Text h = MakeText("Header", stamp, header, 19f, Color.Lerp(accent, NoirTheme.Paper, 0.25f), 6f);
-            h.fontStyle = FontStyles.Bold;
-            Vector2 hSize = h.GetPreferredValues(header);
-            stamp.sizeDelta = new Vector2(hSize.x + 24f, 28f);
-            Stretch(h.rectTransform);
-            for (int i = 0; i < 2; i++)
-            {
-                Image rule = MakeImage("Filete", stampFrame.rectTransform, null, NoirTheme.WithAlpha(accent, 0.9f));
-                rule.rectTransform.anchorMin = new Vector2(0f, i);
-                rule.rectTransform.anchorMax = new Vector2(1f, i);
-                rule.rectTransform.sizeDelta = new Vector2(0f, 2f);
-                rule.rectTransform.anchoredPosition = Vector2.zero;
-            }
-            stamp.localRotation = Quaternion.Euler(0f, 0f, used ? 2f : -3f);
-
-            // Traduz pelo nome exato (a chave) e so depois muda a caixa.
-            string name = Loc.T(item.DisplayName).ToUpperInvariant();
-            TMP_Text n = MakeText("Name", card, name, 30f, used ? NoirTheme.Ash : NoirTheme.Paper, 4f);
-            n.alignment = TextAlignmentOptions.BottomLeft;
-            Stretch(n.rectTransform);
-            n.rectTransform.offsetMin = new Vector2(textLeft, 20f);
-            n.rectTransform.offsetMax = new Vector2(-16f, -12f);
-            n.maxVisibleCharacters = 0;
+            Image icon = MakeImage("Icon", well.rectTransform, item.Icon, used ? new Color(0.55f, 0.55f, 0.55f) : Color.white);
+            icon.preserveAspect = true;
+            icon.rectTransform.sizeDelta = new Vector2(56f, 56f);
 
             toasts.Add(rt);
             LayoutToasts(rt);
 
-            // Entrada: a ficha desliza e assenta girando de leve, como papel jogado na mesa.
             cg.alpha = 0f;
             Vector2 pos = rt.anchoredPosition;
-            rt.anchoredPosition = pos + new Vector2(160f, 0f);
-            card.localRotation = Quaternion.Euler(0f, 0f, 7f);
+            rt.anchoredPosition = pos + new Vector2(120f, 0f);
             cg.DOFade(1f, 0.22f).SetUpdate(true);
-            rt.DOAnchorPos(pos, 0.55f).SetEase(Ease.OutCubic).SetUpdate(true);
-            card.DOLocalRotate(Vector3.zero, 0.7f).SetEase(Ease.OutBack).SetUpdate(true);
+            rt.DOAnchorPos(pos, 0.5f).SetEase(Ease.OutCubic).SetUpdate(true);
+            polaroid.localScale = Vector3.one * 0.6f;
+            polaroid.DOScale(1f, 0.45f).SetEase(Ease.OutBack).SetUpdate(true);
 
-            if (polaroid != null)
-            {
-                polaroid.localScale = Vector3.one * 0.6f;
-                polaroid.DOScale(1f, 0.45f).SetDelay(0.12f).SetEase(Ease.OutBack).SetUpdate(true);
-            }
-
-            stamp.localScale = Vector3.one * 1.9f;
-            CanvasGroup stampGroup = stampGo.AddComponent<CanvasGroup>();
-            stampGroup.alpha = 0f;
-            DOTween.Sequence().SetUpdate(true).SetTarget(stamp)
-                .AppendInterval(0.3f)
-                .AppendCallback(() => NoirAudio.Play(NoirSfx.Place, 0.55f, 0.75f))
-                .Append(stamp.DOScale(1f, 0.16f).SetEase(Ease.InCubic))
-                .Join(stampGroup.DOFade(1f, 0.12f))
-                .Append(card.DOPunchAnchorPos(new Vector2(0f, -4f), 0.25f, 8, 0.5f));
-
-            // Nome batido a maquina depois do carimbo.
-            DOTween.To(() => n.maxVisibleCharacters, v => n.maxVisibleCharacters = v, name.Length, Mathf.Min(0.7f, name.Length * 0.04f))
-                .SetDelay(0.5f).SetEase(Ease.Linear).SetUpdate(true).SetTarget(n);
-
-            if (used)
-            {
-                // Item usado: um risco atravessa o nome.
-                float w = n.GetPreferredValues(name).x;
-                Image strike = MakeImage("Risco", card, null, NoirTheme.WithAlpha(NoirTheme.Moon, 0.9f));
-                strike.rectTransform.anchorMin = strike.rectTransform.anchorMax = new Vector2(0f, 0f);
-                strike.rectTransform.pivot = new Vector2(0f, 0.5f);
-                strike.rectTransform.anchoredPosition = new Vector2(textLeft - 4f, 37f);
-                strike.rectTransform.sizeDelta = new Vector2(w + 8f, 2.5f);
-                strike.rectTransform.localScale = new Vector3(0f, 1f, 1f);
-                strike.rectTransform.DOScaleX(1f, 0.35f).SetDelay(1.1f).SetEase(Ease.InOutCubic).SetUpdate(true);
-            }
-
-            const float life = 3.6f;
-            timer.rectTransform.DOScaleX(0f, life).SetDelay(0.4f).SetEase(Ease.Linear).SetUpdate(true);
-
-            NoirAudio.Play(NoirSfx.Paper, 0.55f, used ? 0.9f : 1.1f);
+            const float life = 3f;
             NoirAudio.Play(NoirSfx.Toast, used ? 0.5f : 0.8f);
-            StartCoroutine(ExpireToast(rt, life + 0.4f));
+            StartCoroutine(ExpireToast(rt, life));
         }
 
         private IEnumerator ExpireToast(RectTransform rt, float delay)
@@ -721,41 +596,46 @@ namespace ProjetoCarta.NoirUI
             GameObject go = new("MomentCard", typeof(RectTransform), typeof(CanvasGroup));
             go.transform.SetParent(canvas.transform, false);
             RectTransform rt = (RectTransform)go.transform;
-            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
-            rt.anchoredPosition = new Vector2(0f, -300f);
-            rt.sizeDelta = new Vector2(1400f, 240f);
+            rt.anchorMin = rt.anchorMax = new Vector2(0f, 1f);
+            rt.pivot = new Vector2(0f, 1f);
+            rt.anchoredPosition = new Vector2(56f, -48f);
+            rt.sizeDelta = new Vector2(720f, 80f);
             cardGroup = go.GetComponent<CanvasGroup>();
             cardGroup.alpha = 0f;
 
-            cardNumeral = MakeText("Numeral", rt, "I", 34f, NoirTheme.Amber, 22f);
-            cardNumeral.rectTransform.anchoredPosition = new Vector2(0f, 78f);
-            cardNumeral.rectTransform.sizeDelta = new Vector2(600f, 50f);
+            // Sem numeral (I, II, III): so o nome do momento. O texto fica criado e desligado.
+            cardNumeral = MakeText("Numeral", rt, string.Empty, 20f, NoirTheme.Amber, 0f);
+            cardNumeral.enabled = false;
 
-            cardTitle = MakeText("Title", rt, "", 78f, NoirTheme.Paper, 12f);
-            cardTitle.rectTransform.anchoredPosition = new Vector2(0f, 6f);
-            cardTitle.rectTransform.sizeDelta = new Vector2(1400f, 110f);
+            cardTitle = MakeText("Title", rt, "", 34f, NoirTheme.Paper, 8f);
+            cardTitle.alignment = TextAlignmentOptions.TopLeft;
+            cardTitle.rectTransform.anchorMin = cardTitle.rectTransform.anchorMax = new Vector2(0f, 1f);
+            cardTitle.rectTransform.pivot = new Vector2(0f, 1f);
+            cardTitle.rectTransform.anchoredPosition = Vector2.zero;
+            cardTitle.rectTransform.sizeDelta = new Vector2(720f, 48f);
 
             cardDivider = MakeImage("Divider", rt, NoirTheme.GetSprite("noir_divider"), Color.white);
-            cardDivider.rectTransform.anchoredPosition = new Vector2(0f, -66f);
-            cardDivider.rectTransform.sizeDelta = new Vector2(640f, 24f);
+            cardDivider.rectTransform.anchorMin = cardDivider.rectTransform.anchorMax = new Vector2(0f, 1f);
+            cardDivider.rectTransform.pivot = new Vector2(0f, 1f);
+            cardDivider.rectTransform.anchoredPosition = new Vector2(0f, -52f);
+            cardDivider.rectTransform.sizeDelta = new Vector2(320f, 16f);
         }
 
         private IEnumerator ShowCardAfter(float delay, int moment)
         {
             yield return new WaitForSecondsRealtime(delay);
             int i = Mathf.Clamp(moment, 0, MomentNames.Length - 1);
-            cardNumeral.text = MomentNumerals[i];
             cardTitle.text = Loc.T(MomentNames[i]);
 
             cardGroup.DOKill();
             DOTween.Kill(cardTitle);
             cardGroup.alpha = 0f;
-            cardTitle.characterSpacing = 40f;
+            cardTitle.characterSpacing = 20f;
             cardDivider.rectTransform.localScale = new Vector3(0f, 1f, 1f);
 
             NoirAudio.Play(NoirSfx.Title, 0.7f);
             cardGroup.DOFade(1f, 0.7f).SetUpdate(true);
-            DOTween.To(() => cardTitle.characterSpacing, v => cardTitle.characterSpacing = v, 12f, 2.4f)
+            DOTween.To(() => cardTitle.characterSpacing, v => cardTitle.characterSpacing = v, 8f, 2.4f)
                 .SetEase(Ease.OutCubic).SetUpdate(true).SetTarget(cardTitle);
             cardDivider.rectTransform.DOScaleX(1f, 1f).SetDelay(0.3f).SetEase(Ease.OutCubic).SetUpdate(true);
 
@@ -794,7 +674,7 @@ namespace ProjetoCarta.NoirUI
 
         private static string Cap(string key)
         {
-            return "<color=#DEA846>[" + key + "]</color>";
+            return "<color=#E6BE3C>[" + key + "]</color>";
         }
 
         private static string ReadKey(object owner, string field, string fallback)
@@ -820,7 +700,7 @@ namespace ProjetoCarta.NoirUI
             // Ate o primeiro piscar, a linha de piscar fica maior e ambar: e a mecanica central do jogo.
             string blinkLine = BlinkTutorial.Learned
                 ? Cap(Loc.T("CLIQUE DIREITO")) + "  " + Loc.T("PISCAR")
-                : "<size=130%>" + Cap(Loc.T("CLIQUE DIREITO")) + "  <color=#F2D9A0>" + Loc.T("PISCAR") + "</color></size>";
+                : "<size=130%>" + Cap(Loc.T("CLIQUE DIREITO")) + "  <color=#F5DE8A>" + Loc.T("PISCAR") + "</color></size>";
             string text = action + "\n" +
                 blinkLine + "\n" +
                 Cap(inventoryKeyLabel) + "  " + Loc.T("INVENTÁRIO (SEGURAR)") + "\n" +
@@ -883,8 +763,9 @@ namespace ProjetoCarta.NoirUI
             thoughtQuote = MakeText("Aspas", thoughtBody, "“", 120f, NoirTheme.WithAlpha(NoirTheme.Amber, 0.3f), 0f);
             thoughtQuote.rectTransform.sizeDelta = new Vector2(80f, 120f);
             thoughtQuote.fontStyle = FontStyles.Italic;
+            thoughtQuote.enabled = false; // sem aspas nas falas
 
-            thoughtText = MakeText("Texto", thoughtBody, string.Empty, 30f, NoirTheme.Paper, 1.5f);
+            thoughtText = MakeText("Texto", thoughtBody, string.Empty, 30f, Color.white, 1.5f);
             Stretch(thoughtText.rectTransform);
             thoughtText.fontStyle = FontStyles.Italic;
             thoughtText.alignment = TextAlignmentOptions.Bottom;
@@ -917,17 +798,12 @@ namespace ProjetoCarta.NoirUI
             if (thoughtVisible && thought == currentThought)
             {
                 thoughtHideAt = Time.unscaledTime + hold;
-                thoughtBody.DOKill(true);
-                if (blocked)
-                    thoughtBody.DOShakeAnchorPos(0.3f, new Vector2(7f, 0f), 18, 0f).SetUpdate(true);
-                else
-                    thoughtBody.DOPunchAnchorPos(new Vector2(0f, 5f), 0.25f, 6, 0.5f).SetUpdate(true);
                 return;
             }
 
             currentThought = thought;
             thoughtText.text = shown;
-            thoughtText.color = blocked ? Color.Lerp(NoirTheme.Paper, NoirTheme.Amber, 0.3f) : NoirTheme.Paper;
+            thoughtText.color = Color.white;
             thoughtHideAt = Time.unscaledTime + hold;
             thoughtVisible = true;
 
@@ -963,9 +839,6 @@ namespace ProjetoCarta.NoirUI
             line.DOKill();
             line.localScale = new Vector3(0f, 1f, 1f);
             line.DOScaleX(1f, 0.6f).SetDelay(0.15f).SetEase(Ease.OutCubic).SetUpdate(true);
-
-            if (blocked)
-                thoughtBody.DOShakeAnchorPos(0.35f, new Vector2(8f, 0f), 20, 0f).SetDelay(0.1f).SetUpdate(true);
 
             NoirAudio.Play(NoirSfx.Thought, 0.6f);
         }

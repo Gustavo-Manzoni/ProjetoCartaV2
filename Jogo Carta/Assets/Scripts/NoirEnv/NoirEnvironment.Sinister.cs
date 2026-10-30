@@ -4,8 +4,7 @@ using UnityEngine;
 namespace ProjetoCarta.NoirEnv
 {
     /// <summary>
-    /// Camada sinistra por cima do cenario de cada sala: noite de tempestade nas janelas (chuva escorrendo,
-    /// relampagos, um homem de chapeu do lado de fora no clarao), luz baixa em pocos com cones de luz na
+    /// Camada sinistra por cima do cenario de cada sala: luz baixa em pocos com cones de luz na
     /// neblina, neblina rasteira, lampada pendurada balancando, infiltracao, mofo, dias riscados na parede,
     /// maos arrastadas, chao queimado sob a cadeira, vultos que se sentam quando ninguem esta olhando e a
     /// grade de cor (pretos esmagados, sombras doentias). Nada aqui tem collider nem cobre os puzzles.
@@ -33,8 +32,6 @@ namespace ProjetoCarta.NoirEnv
                 if (t.parent == null || t.parent.name != "Mobilia") continue;
                 if (t.name.StartsWith("Quadro_") || t.name.StartsWith("Diploma_") || t.name.StartsWith("Retrato") || t.name.StartsWith("Aviso_"))
                     revisit.pictures.Add(t);
-                else if (t.name == "Relogio_Parede")
-                    revisit.clocks.Add(t);
             }
 
             Transform tally = env.Find("Dias_Riscados");
@@ -80,9 +77,6 @@ namespace ProjetoCarta.NoirEnv
 
             NoirSwing swing = pivot.gameObject.AddComponent<NoirSwing>();
             swing.amplitude = 4.5f; swing.period = 5.8f;
-
-            // Janela: noite de tempestade.
-            Storm(env, f, "Janela_Vidro", "Luz_Lua", new Vector2(2.2f, 2.0f), 1f, true);
 
             // Infiltracao no alto das paredes e mofo nos cantos.
             Leaks(env, f, 1, 0.75f);
@@ -136,7 +130,6 @@ namespace ProjetoCarta.NoirEnv
 
             // Dias riscados atras da cadeira, maos arrastadas na parede da frente, arranhoes perto da porta.
             Decal(env, f, Side.Back, 1.15f, 1.55f, new Vector2(2.2f, 1.1f), SinisterTex.Tally(7, 97), "Dias_Riscados");
-            Decal(env, f, Side.Front, 1.35f, 1.75f, new Vector2(1.3f, 2.6f), SinisterTex.Hands(4), "Maos_Arrastadas");
             Decal(env, f, Side.Right, -1.4f, 1.25f, new Vector2(0.8f, 0.8f), SinisterTex.Claws(9), "Arranhoes");
             Decal(env, f, Side.Back, -4.6f, 0.45f, new Vector2(1.3f, 1.3f), SinisterTex.Mold(5), "Mofo_Rodape");
             Leaks(env, f, 2, 0.9f);
@@ -188,8 +181,6 @@ namespace ProjetoCarta.NoirEnv
                 Cone(env, t.position, 0.4f, 2.6f, f.ceil - 0.2f, new Color(0.8f, 1f, 0.95f, 0.07f));
             }
 
-            Storm(env, f, "Janela_Nublada", "Luz_Nublada", new Vector2(3.0f, 2.2f), 0.6f, false);
-
             Leaks(env, f, 3, 1f);
             Decal(env, f, Side.Front, 4.6f, f.ceil - 0.7f, new Vector2(1.6f, 1.5f), SinisterTex.Mold(6), "Mofo_Teto");
             Decal(env, f, Side.Back, -5.0f, 0.7f, new Vector2(1.5f, 1.5f), SinisterTex.Mold(8), "Mofo_Rodape");
@@ -204,7 +195,35 @@ namespace ProjetoCarta.NoirEnv
                 AddGhosts(env, ghosts, 2);
             }
 
+            MaintenanceBoxLight(cena, f);
+
             GroundFog(env, f, new Color(0.45f, 0.5f, 0.48f, 0.06f), 24);
+        }
+
+        /// <summary>Lampada dentro do compartimento de manutencao: sem ela a manivela some no breu da sala.</summary>
+        private static void MaintenanceBoxLight(Transform cena, Frame f)
+        {
+            Transform box = Deep(cena, "Compartimento_Manutencao");
+            if (box == null) return;
+
+            Vector3 pos = box.position;
+            Renderer[] parts = box.GetComponentsInChildren<Renderer>(true);
+            if (parts.Length > 0)
+            {
+                Bounds b = parts[0].bounds;
+                for (int i = 1; i < parts.Length; i++) b.Encapsulate(parts[i].bounds);
+                pos = b.center;
+            }
+
+            // Afasta a luz da parede, em direcao ao centro da sala.
+            Vector3 toRoom = f.O - pos;
+            toRoom.y = 0f;
+            if (toRoom.sqrMagnitude > 0.0001f) pos += toRoom.normalized * 0.25f;
+
+            Light lamp = Prims.MakeLight(box, "Luz_Compartimento", pos, LightType.Point, new Color(1f, 0.86f, 0.62f), 0.25f, 1.2f, false);
+            lamp.enabled = false;
+            // So acende quando a trava de discos e resolvida (o compartimento abre e a manivela precisa aparecer).
+            lamp.gameObject.AddComponent<NoirLightWhenSolved>().Init(lamp, UnityEngine.Object.FindFirstObjectByType<ProjetoCarta.Puzzles.DialLockMechanism>(FindObjectsInactive.Include));
         }
 
         // ------------------------------------------------------------------ pecas
@@ -291,84 +310,6 @@ namespace ProjetoCarta.NoirEnv
                 float height = 1.8f + (float)rng.NextDouble() * 1.4f;
                 Decal(env, f, w, along, f.ceil - height * 0.5f - 0.02f, new Vector2(width, height), SinisterTex.Leak(seed * 10 + i % 3), "Infiltracao");
             }
-        }
-
-        /// <summary>
-        /// Janela de noite com tempestade: ceu escuro com nuvens e lua velada, chuva escorrendo, relampagos e
-        /// (as vezes, so no clarao) um homem de chapeu parado do lado de fora. Maos marcadas no vidro.
-        /// </summary>
-        private static void Storm(Transform env, Frame f, string windowName, string moonName, Vector2 size, float strength, bool hands)
-        {
-            Transform glass = env.Find(windowName);
-            if (glass == null) return;
-            Renderer win = glass.GetComponent<Renderer>();
-            Vector3 inward = -glass.forward; // o quad olha para quem esta na sala
-
-            Color sky = new Color(0.55f, 0.62f, 0.85f) * 1.6f;
-            Material night = new(EnvMat.Glow(null, Color.white, 1f)) { name = "Noir_Noite" };
-            night.SetColor("_EmissionColor", sky);
-            night.SetTexture("_EmissionMap", NightSky());
-            win.sharedMaterial = night;
-
-            GameObject watcher = Prims.Quad(env, "Vulto_Janela", glass.position + inward * 0.004f + Vector3.down * (size.y * 0.5f - 0.95f),
-                new Vector2(0.95f, 1.9f), SinisterTex.Mat("silhouette", SinisterTex.Silhouette(), Color.white, SinisterTex.Blend.Multiply), inward);
-            if (hands)
-                Prims.Quad(env, "Maos_Vidro", glass.position + inward * 0.006f + glass.right * (size.x * 0.22f) + Vector3.down * (size.y * 0.12f),
-                    new Vector2(0.7f, 1.4f), SinisterTex.Mat("hands_glass", SinisterTex.Hands(12), Color.white, SinisterTex.Blend.Multiply), inward);
-
-            GameObject rain = Prims.Quad(env, "Chuva_Vidro", glass.position + inward * 0.01f, size,
-                SinisterTex.Mat("rain" + size.x, SinisterTex.Rain(), new Color(0.7f, 0.78f, 0.95f, 0.35f), SinisterTex.Blend.Additive), inward);
-            rain.GetComponent<Renderer>().sharedMaterial.SetTextureScale("_BaseMap", new Vector2(size.x / 0.9f, size.y / 1.8f));
-            rain.AddComponent<NoirScroll>().speed = new Vector2(0f, 0.32f);
-
-            Light moon = null;
-            Transform mt = env.Find(moonName);
-            if (mt != null && mt.TryGetComponent(out moon))
-            {
-                moon.color = new Color(0.5f, 0.62f, 0.95f);
-                moon.intensity *= 0.75f;
-            }
-
-            Light flash = Prims.MakeLight(env, "Relampago", glass.position + inward * 1.5f, LightType.Point,
-                new Color(0.75f, 0.85f, 1f), 0f, 16f * strength, false);
-            NoirLightning storm = glass.gameObject.AddComponent<NoirLightning>();
-            storm.moon = moon;
-            storm.flash = flash;
-            storm.window = win;
-            storm.windowEmission = sky;
-            storm.watcher = watcher;
-            storm.strength = strength;
-        }
-
-        private static Texture2D nightSky;
-
-        private static Texture2D NightSky()
-        {
-            if (nightSky != null) return nightSky;
-            const int w = 256, h = 256;
-            nightSky = new Texture2D(w, h, TextureFormat.RGBA32, true) { name = "Noir_CeuNoturno", wrapMode = TextureWrapMode.Clamp };
-            Color[] px = new Color[w * h];
-            Vector2 moon = new(0.72f, 0.78f);
-            for (int y = 0; y < h; y++)
-                for (int x = 0; x < w; x++)
-                {
-                    float u = x / (float)w, v = y / (float)h;
-                    float clouds = Mathf.PerlinNoise(u * 3f + 4f, v * 5f) * 0.6f + Mathf.PerlinNoise(u * 9f, v * 12f + 2f) * 0.4f;
-                    float d = Vector2.Distance(new Vector2(u, v), moon);
-                    float glow = Mathf.Exp(-d * 7f) * 0.9f;
-                    float lit = Mathf.Clamp01(clouds * 1.4f - 0.45f) * (0.25f + glow);
-                    float baseLum = Mathf.Lerp(0.05f, 0.13f, v);
-                    // Telhados e chamines recortados embaixo.
-                    float roof = 0.18f + Mathf.PerlinNoise(u * 6f, 1.3f) * 0.08f + (Mathf.Repeat(u * 7f, 1f) < 0.12f ? 0.07f : 0f);
-                    float l = v < roof ? 0.01f : baseLum + lit + glow * 0.35f;
-                    // Uma janela acesa num predio distante.
-                    if (v < roof && v > roof - 0.05f && Mathf.Abs(u - 0.27f) < 0.012f) l = 0.6f;
-                    px[y * w + x] = new Color(l * 0.85f, l * 0.9f, l * 1.15f, 1f);
-                }
-
-            nightSky.SetPixels(px);
-            nightSky.Apply(true, true);
-            return nightSky;
         }
 
         /// <summary>Neblina rasteira: manchas horizontais grandes e quase transparentes, deslizando devagar no chao.</summary>
@@ -475,8 +416,7 @@ namespace ProjetoCarta.NoirEnv
                 // Bracos: no apoio da cadeira (amarrado) ou caidos sobre as coxas.
                 if (strapped)
                     Part(PrimitiveType.Capsule, new Vector3(side * 0.3f * k, s + 0.2f, 0.1f * k), new Vector3(0.09f, 0.24f, 0.09f) * k, new Vector3(80f, 0f, 0f));
-                else
-                    Part(PrimitiveType.Capsule, new Vector3(side * 0.24f * k, s + 0.3f, 0.06f * k), new Vector3(0.09f, 0.3f, 0.09f) * k, new Vector3(35f, 0f, side * -6f));
+                // Os vultos soltos (nao amarrados) ficam sem bracos.
             }
 
             Part(PrimitiveType.Capsule, new Vector3(0f, s + 0.42f * k, -0.05f * k), new Vector3(0.44f, 0.36f, 0.26f) * k, new Vector3(strapped ? -4f : 10f, 0f, 0f));
@@ -488,6 +428,25 @@ namespace ProjetoCarta.NoirEnv
             if (strapped)
                 Part(PrimitiveType.Cylinder, new Vector3(0f, 0.27f * k, 0.02f * k), new Vector3(0.3f, 0.05f, 0.3f) * k, Vector3.zero, head);
             return root;
+        }
+    }
+
+    /// <summary>Luz que fica apagada ate a trava de discos ser resolvida (sem trava na cena, fica apagada).</summary>
+    public sealed class NoirLightWhenSolved : MonoBehaviour
+    {
+        private Light lamp;
+        private ProjetoCarta.Puzzles.DialLockMechanism lockMechanism;
+
+        public void Init(Light light, ProjetoCarta.Puzzles.DialLockMechanism mechanism)
+        {
+            lamp = light;
+            lockMechanism = mechanism;
+        }
+
+        private void Update()
+        {
+            if (lamp != null)
+                lamp.enabled = lockMechanism != null && lockMechanism.IsSolved;
         }
     }
 

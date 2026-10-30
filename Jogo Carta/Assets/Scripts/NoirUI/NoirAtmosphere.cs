@@ -46,14 +46,12 @@ namespace ProjetoCarta.NoirUI
 
         public void Configure(bool gameplay)
         {
-            vignetteBase = gameplay ? 0.62f : 0.82f;
-            // Grao sutil: textura de filme sem sujar a leitura de objetos, textos e keypads.
-            // Na gameplay o grao vem do pos-processamento (respeita os pretos); este, por cima da tela, so de leve:
-            // com as salas escuras ele virava um veu marrom sobre o breu.
-            grainBase = gameplay ? 0.05f : 0.3f;
+            // Menu e gameplay compartilham o mesmo visual: grao so de leve por cima da tela (com cenas escuras ele
+            // virava um veu marrom sobre o breu) e a vinheta fica por conta do pos-processamento da sala.
+            vignetteBase = 0.62f;
+            grainBase = 0.05f;
             ApplyGrain(null);
-            tint.color = NoirTheme.WithAlpha(new Color(1f, 0.62f, 0.25f), gameplay ? 0.012f : 0.05f);
-        }
+            tint.color = NoirTheme.WithAlpha(new Color(1f, 0.62f, 0.25f), 0.012f);        }
 
         /// <summary>Grao = intensidade do momento (menu ou gameplay) x opcao "Grao de filme".</summary>
         private void ApplyGrain(string key)
@@ -115,11 +113,6 @@ namespace ProjetoCarta.NoirUI
 
             tint = Full("Tint", null);
             tint.color = NoirTheme.WithAlpha(new Color(1f, 0.62f, 0.25f), 0.05f);
-
-            dustRoot = new GameObject("Dust", typeof(RectTransform)).GetComponent<RectTransform>();
-            dustRoot.SetParent(transform, false);
-            Stretch(dustRoot);
-            BuildDust(26);
 
             vignette = FullRaw("Vignette", NoirTheme.Tex("noir_vignette"));
             vignette.color = new Color(0, 0, 0, vignetteBase);

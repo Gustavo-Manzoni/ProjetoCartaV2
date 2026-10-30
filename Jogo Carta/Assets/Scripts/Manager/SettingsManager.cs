@@ -2,6 +2,7 @@ using TMPro;
 using ProjetoCarta.Core;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 public enum SliderType { Master, Sfx, Music}
 public class SettingsManager : MonoBehaviour
@@ -27,12 +28,38 @@ public class SettingsManager : MonoBehaviour
     {
         if (LocalizationManager.Instance != null)
             LocalizationManager.Instance.LoadLanguage();
+        if (Instance != this)
+            return;
+        GameSettings.Changed += OnSettingChanged;
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        RefreshFps();
     }
-    public void ShowFPS(bool showFps) 
+    private void OnDestroy()
     {
-        fpsText.gameObject.SetActive(showFps);
+        if (Instance != this)
+            return;
+        GameSettings.Changed -= OnSettingChanged;
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+    private void OnSettingChanged(string key)
+    {
+        if (key == GameSettings.ShowFpsKey)
+            RefreshFps();
+    }
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode) => RefreshFps();
+    /// <summary>
+    /// O contador antigo so aparece no menu (cena 0) e so com a opcao ligada. Na gameplay quem
+    /// mostra o FPS e o GameplayHud; sem isso o contador antigo ficava sempre ligado.
+    /// </summary>
+    private void RefreshFps()
+    {
+        if (fpsText != null)
+            fpsText.gameObject.SetActive(GameSettings.ShowFps && SceneManager.GetActiveScene().buildIndex == 0);
+    }
+    public void ShowFPS(bool showFps)
+    {
         PlayerPrefs.SetInt("showFps", showFps ? 1 : 0);
-    
+        RefreshFps();
     }
     public void VSync(bool active)
     {

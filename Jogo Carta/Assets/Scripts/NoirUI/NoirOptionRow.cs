@@ -60,7 +60,7 @@ namespace ProjetoCarta.NoirUI
         private readonly float seed;
         private bool selected;
 
-        private Color Accent => Danger ? NoirTheme.Blood : NoirTheme.Amber;
+        private Color Accent => Danger ? NoirTheme.Blood : new Color32(246, 243, 236, 255);
         private bool Adjustable => Kind == NoirOptionKind.Toggle || Kind == NoirOptionKind.Choice ||
                                    Kind == NoirOptionKind.Slider || Kind == NoirOptionKind.Dropdown;
 

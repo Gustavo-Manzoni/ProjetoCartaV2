@@ -162,7 +162,7 @@ namespace ProjetoCarta.EditorTools
                 Check(GameplayLocks.IsLocked(GameplayLock.Cursor), "Relatorio de manutencao (anexo da pasta) legivel");
                 yield return CloseDocuments();
 
-                // Compartimento de manutencao (parede da janela): cada disco na hora anotada no relatorio.
+                // Compartimento de manutencao (parede do radiador): cada disco na hora anotada no relatorio.
                 string box = p3 + "P1/Compartimento_Manutencao/";
                 DialLockMechanism dialLock = Find(p3 + "P1/Compartimento_Manutencao").GetComponent<DialLockMechanism>();
                 yield return Use(box + "Portinhola/Tampa", Vector3.right, 1.0f, "trancado");

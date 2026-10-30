@@ -209,7 +209,7 @@ namespace ProjetoCarta.NoirEnv
 
         private static void WindowFrame(Transform env, Frame f, Vector3 c, Vector2 size, Material frame)
         {
-            // c: centro da janela (encostada na parede esquerda); abre para +x local
+            // Moldura do vidro de observacao da camara. c: centro do vidro (encostado na parede esquerda); abre para +x local
             float x = c.x;
             const float b = 0.12f;
             Vector3 centerWorld = c;
@@ -255,16 +255,6 @@ namespace ProjetoCarta.NoirEnv
             fl.target = pend; fl.emissive = bulb.GetComponent<Renderer>(); fl.emissiveColor = new Color(1f, 0.75f, 0.45f) * 3.5f;
             fl.amount = 0.05f; fl.speed = 1.6f; fl.dropoutChance = 0.03f;
             Prims.MakeLight(env, "Luz_Preenchimento", f.P(0, 2f, -4f), LightType.Point, new Color(1f, 0.6f, 0.35f), 0.9f, 9f, false);
-
-            // janela com persiana e luar
-            Vector3 wc = f.P(-f.hx + 0.06f, 2.6f, 1.5f);
-            Vector3 inward = f.D(1, 0, 0);
-            Prims.Quad(env, "Janela_Vidro", wc, new Vector2(2.2f, 2.0f),
-                EnvMat.Glow("env_window", new Color(0.35f, 0.5f, 0.8f), 0.9f), inward);
-            WindowFrame(env, f, wc, new Vector2(2.2f, 2.0f), EnvMat.Lit("env_wood_panel", Vector2.one, new Color(0.3f, 0.2f, 0.14f), 0.3f));
-            Light moon = Prims.MakeLight(env, "Luz_Lua", f.P(-f.hx + 0.5f, 3.4f, 1.5f), LightType.Spot,
-                new Color(0.55f, 0.7f, 1f), 16f, 18f, true, f.P(3f, 0f, 0.3f), 75f, EnvMat.Tex("env_cookie_blinds"));
-            moon.transform.rotation = Quaternion.LookRotation(f.P(3f, 0f, 0.3f) - moon.transform.position, f.D(0, 1, 0));
 
             Prims.Dust(env, "Poeira", f.P(0, 2f, 0), new Vector3(f.hx * 1.6f, 3f, f.hz * 1.6f), new Color(1f, 0.85f, 0.6f, 0.5f), 90);
             DecorOffice(env, f);
@@ -329,16 +319,6 @@ namespace ProjetoCarta.NoirEnv
             Prims.Box(env, "Faixa_C", cf + new Vector3(hs, 0.012f, 0), new Vector3(0.18f, 0.012f, 2 * hs), haz, false, null, false);
             Prims.Box(env, "Faixa_D", cf + new Vector3(-hs, 0.012f, 0), new Vector3(0.18f, 0.012f, 2 * hs), haz, false, null, false);
 
-            // luz de emergencia vermelha pulsando junto a porta
-            Transform door = Deep(cena, "P6_Porta_da_Camara");
-            Vector3 dp = door != null ? door.position : f.P(4f, 1.5f, f.hz - 0.3f);
-            Vector3 ep = new(dp.x, f.O.y + 3.3f, dp.z);
-            if (door != null) ep -= f.D(0, 0, 0.2f) ;
-            Light red = Prims.MakeLight(env, "Emergencia", ep, LightType.Point, new Color(1f, 0.1f, 0.06f), 3.2f, 8f, false);
-            GameObject lamp = Prims.Ball(env, "Giroflex", ep, 0.2f, EnvMat.Glow(null, new Color(1f, 0.1f, 0.05f), 3f));
-            NoirLightFlicker rf = red.gameObject.AddComponent<NoirLightFlicker>();
-            rf.target = red; rf.emissive = lamp.GetComponent<Renderer>(); rf.emissiveColor = new Color(1f, 0.1f, 0.05f) * 3f; rf.pulseSpeed = 3.2f;
-
             // vidro de observacao na parede esquerda
             Vector3 gc = f.P(-f.hx + 0.04f, 2.0f, -1.0f);
             Prims.Quad(env, "Vidro_Observacao", gc, new Vector2(4f, 1.5f), EnvMat.Glass(new Color(0.02f, 0.05f, 0.06f), 0.12f), f.D(1, 0, 0));
@@ -385,16 +365,6 @@ namespace ProjetoCarta.NoirEnv
                 fl.target = l; fl.emissive = glow.GetComponent<Renderer>(); fl.emissiveColor = tube * 2.4f;
                 fl.amount = 0.03f; fl.speed = 14f; fl.dropoutChance = i == 2 ? 0.35f : 0.015f;
             }
-
-            // Janela com persiana: luz de dia nublado, fria, cortada em listras.
-            Vector2 ws = new(3.0f, 2.2f);
-            Vector3 wc = f.P(-f.hx + 0.06f, 2.5f, 0f);
-            Prims.Quad(env, "Janela_Nublada", wc, ws, EnvMat.Glow("env_window", new Color(0.62f, 0.72f, 0.78f), 1.1f), f.D(1, 0, 0));
-            WindowFrame(env, f, wc, ws, EnvMat.Lit("env_metal", Vector2.one, new Color(0.3f, 0.33f, 0.33f), 0.4f, 0.5f));
-            Vector3 aim = f.P(3.2f, 0f, 0.4f);
-            Light day = Prims.MakeLight(env, "Luz_Nublada", f.P(-f.hx + 0.5f, 3.4f, 0f), LightType.Spot,
-                new Color(0.7f, 0.82f, 0.9f), 14f, 16f, true, aim, 72f, EnvMat.Tex("env_cookie_blinds"));
-            day.transform.rotation = Quaternion.LookRotation(aim - day.transform.position, f.D(0, 1, 0));
 
             Prims.Dust(env, "Poeira", f.P(-1f, 2f, 0), new Vector3(f.hx * 1.4f, 3.2f, f.hz * 1.4f), new Color(0.8f, 0.92f, 0.9f, 0.4f), 60, 0.045f);
             DecorArchive(env, f);

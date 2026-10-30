@@ -374,8 +374,6 @@ namespace ProjetoCarta.NoirUI
             if (!Calm)
             {
                 Spike(0.85f, 0.15f);
-                lightScale = 2.2f;
-                yield return Wait(0.06f);
                 lightScale = 0.02f;
                 yield return Wait(Random.Range(0.9f, 1.4f));
                 yield return Stutter(0.35f);

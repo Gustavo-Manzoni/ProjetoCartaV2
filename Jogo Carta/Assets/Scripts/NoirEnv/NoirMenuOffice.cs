@@ -90,10 +90,16 @@ namespace ProjetoCarta.NoirEnv
             mood.fogColor = new Color(0.08f, 0.06f, 0.05f);
             mood.fogDensity = 0.012f;
             mood.postExposure = 1.4f;
-            mood.saturation = -18f;
-            mood.contrast = 16f;
+            // Mesma grade do escritorio de P1 (azul frio nas sombras, ambar nas luzes, pretos esmagados).
+            mood.saturation = -28f;
+            mood.contrast = 30f;
             mood.colorFilter = new Color(1f, 0.93f, 0.82f);
-            mood.vignette = 0.16f;
+            mood.vignette = 0.36f;
+            mood.splitShadows = new Color(0.33f, 0.45f, 0.5f);
+            mood.splitHighlights = new Color(0.68f, 0.52f, 0.36f);
+            mood.splitBalance = -25f;
+            mood.lift = new Vector4(1f, 1f, 1.04f, -0.005f);
+            mood.chromatic = 0.12f;
             mood.bloom = 0.8f;
             mood.bloomThreshold = 0.85f;
             mood.bloomTint = new Color(1f, 0.8f, 0.55f);

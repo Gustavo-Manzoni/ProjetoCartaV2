@@ -4,7 +4,7 @@ namespace ProjetoCarta.NoirEnv
 {
     /// <summary>
     /// Mobilia de fundo das tres salas: modelos da <see cref="NoirDecorLibrary"/> e pecas montadas com primitivas
-    /// (bancos, poltronas, cabideiro, radiador, quadros, painel eletrico...). So enfeita: nada aqui e interagivel.
+    /// (bancos, poltronas, radiador, quadros, painel eletrico...). So enfeita: nada aqui e interagivel.
     /// As posicoes estao no referencial da sala (x de -5,9 a 5,9; z de -6 na parede da frente a 6 no fundo) e
     /// deixam livres os pontos de onde o jogador usa cada puzzle. Moveis grandes tem collider; o
     /// <see cref="ProjetoCarta.Blink.PlayerSafePlacement"/> tira o jogador de dentro deles depois da piscada.
@@ -20,12 +20,10 @@ namespace ProjetoCarta.NoirEnv
             Transform root = DecorRoot(env);
             System.Random rng = new(11);
             Material wood = EnvMat.Lit("env_wood_panel", Vector2.one, new Color(0.42f, 0.27f, 0.18f), 0.35f);
-            Material brass = EnvMat.Lit("env_metal", Vector2.one, new Color(0.75f, 0.58f, 0.3f), 0.6f, 0.9f);
 
-            // Fundo: estante de livros no canto esquerdo, vaso e comoda com bebidas no canto direito.
+            // Fundo: estante de livros no canto esquerdo e comoda com bebidas no canto direito.
             Placed books = Model(root, f, "estante_livros", -4.75f, 5.42f, 180f, 3.0f);
             FillShelves(books, rng, ShelfStyle.Books, 0.95f);
-            Plant(Group(root, f, "Vaso", -3.0f, 5.45f, 180f), rng, 1.25f);
             Placed dresser = Model(root, f, "comoda", 4.55f, 5.45f, 180f, 1.25f);
             if (dresser.ok)
             {
@@ -48,9 +46,7 @@ namespace ProjetoCarta.NoirEnv
             Placed shelfB = Model(root, f, "estante_livros", 4.65f, -5.42f, 0f, 3.0f);
             FillShelves(shelfB, rng, ShelfStyle.Books, 0.9f);
 
-            // Laterais: cabideiro com chapeu e sobretudo, relogio acima dos baus, radiador sob a janela.
-            CoatRack(Group(root, f, "Cabideiro", -5.25f, -3.3f, 60f), 1.2f);
-            WallClock(Wall(root, f, "Relogio_Parede", 5.9f, 3.1f, 0.3f, -90f), 0.75f, wood, brass);
+            // Laterais: radiador e quadro na parede esquerda.
             Radiator(Wall(root, f, "Radiador", -5.9f, 0f, 1.5f, 90f), 1.9f, new Color(0.55f, 0.47f, 0.38f));
             Picture(Wall(root, f, "Quadro_Lateral", -5.9f, 2.8f, -3.3f, 90f), new Vector2(0.9f, 0.7f), 0, wood);
         }
@@ -70,8 +66,7 @@ namespace ProjetoCarta.NoirEnv
             Light exit = Prims.MakeLight(root, "Luz_Testemunhas", f.P(-5.6f, 3.6f, 0f), LightType.Point, new Color(1f, 0.55f, 0.3f), 0.5f, 5f, false);
             exit.renderMode = LightRenderMode.ForceVertex;
 
-            // Fundo: maca com lencol e lata de material ao lado do vidro; painel eletrico no canto direito.
-            Gurney(Group(root, f, "Maca_Hospitalar", -1.95f, 4.95f, 90f), 1.25f);
+            // Fundo: arquivo de aco ao lado do vidro; painel eletrico no canto direito.
             Placed locker = Model(root, f, "arquivo_aco", -3.45f, 5.35f, 180f, 1.85f);
             if (locker.ok)
             {
@@ -132,35 +127,31 @@ namespace ProjetoCarta.NoirEnv
             Placed rackB = Model(root, f, "estante_media", 5.42f, -3.75f, -90f, 3.1f);
             FillShelves(rackB, rng, ShelfStyle.Mixed, 0.95f);
             CrateStack(root, f, 5.1f, -5.3f, -90f, rng);
-            WallClock(Wall(root, f, "Relogio_Parede", 5.9f, 3.25f, 0.6f, -90f), 0.7f, metal, metal);
 
-            // Fundo: quadro de avisos, estante baixa de pastas, retrato oficial e um vaso.
+            // Fundo: quadro de avisos, estante baixa de pastas, retrato oficial.
             Placed cork = Model(root, f, "quadro_cortica", -0.55f, 5.94f, 180f, 0f, false, 1.75f, 2.5f);
             Placed low = Model(root, f, "estante_baixa", -0.55f, 5.42f, 180f, 1.3f);
             FillShelves(low, rng, ShelfStyle.Binders, 0.9f);
             if (low.ok)
                 PaperStack(At(low, -0.4f, 0f), rng, 4, new Vector2(0.36f, 0.28f));
             Picture(Wall(root, f, "Retrato_Oficial", 1.45f, 2.9f, 6f, 180f), new Vector2(0.75f, 0.95f), 1, wood);
-            Plant(Group(root, f, "Vaso", 1.55f, 5.45f, 180f), rng, 1.2f);
 
-            // Esquerda: radiador sob a janela e bebedouro. Entre a janela e o armario alto fica a caixa de
+            // Esquerda: radiador e bebedouro. Entre o radiador e o armario alto fica a caixa de
             // manutencao da manivela (na cena): a parede ali fica livre para ela.
             Radiator(Wall(root, f, "Radiador", -5.9f, 0f, 0f, 90f), 2.2f, new Color(0.62f, 0.64f, 0.6f));
             WaterCooler(Group(root, f, "Bebedouro", -5.4f, -5.35f, 45f), 1.25f);
 
-            // Frente: banco de espera, cabideiro, comoda com papeis e lixeira. (O gaveteiro do kit tem as gavetas
+            // Frente: banco de espera e comoda com papeis. (O gaveteiro do kit tem as gavetas
             // abertas em escadinha na propria malha; a comoda tem gavetas fechadas.)
             Bench(Group(root, f, "Banco_Espera", -2.45f, -5.55f, 0f), 2.6f, wood, metal);
             Picture(Wall(root, f, "Aviso_A", -3.15f, 2.7f, -6f, 0f), new Vector2(0.6f, 0.8f), 3, metal);
             Picture(Wall(root, f, "Aviso_B", -1.75f, 2.7f, -6f, 0f), new Vector2(0.6f, 0.8f), 2, metal);
-            CoatRack(Group(root, f, "Cabideiro", -0.45f, -5.45f, 20f), 1.2f);
             Placed chest = Model(root, f, "comoda", 1.75f, -5.4f, 0f, 1.2f);
             if (chest.ok)
             {
                 PaperStack(At(chest, -0.45f, 0.05f), rng, 4, new Vector2(0.42f, 0.32f));
                 ArchiveBoxes(At(chest, 0.5f, -0.1f), rng, 1, 0.34f);
             }
-            TrashBin(Group(root, f, "Lixeira", 3.25f, -5.55f, 0f), rng, new Color(0.36f, 0.38f, 0.37f));
 
             // Mesa do juiz no fundo, com o cofre numerico no meio do tampo (o cofre esta na cena): papeis nas pontas.
             // A mesa do arquivo (bandeja de protocolo e gaveta da pasta) fica na cena, no meio da parede direita;
@@ -472,7 +463,7 @@ namespace ProjetoCarta.NoirEnv
             Material label = EnvMat.Lit(null, Vector2.one, new Color(0.86f, 0.83f, 0.74f), 0.1f);
             Transform box = Part(parent, "Caixa_Arquivo", PrimitiveType.Cube, basePos + Vector3.up * size.y * 0.5f, size, card).transform;
             box.localRotation = Quaternion.Euler(0f, (float)rng.NextDouble() * 6f - 3f, 0f);
-            Part(parent, "Tampa", PrimitiveType.Cube, basePos + Vector3.up * (size.y - 0.03f), new Vector3(size.x + 0.012f, 0.06f, size.z + 0.012f), lid);
+            Part(parent, "Tampa", PrimitiveType.Cube, basePos + Vector3.up * (size.y - 0.03f + 0.01f), new Vector3(size.x + 0.012f, 0.06f, size.z + 0.012f), lid);
             Part(parent, "Etiqueta", PrimitiveType.Cube, basePos + new Vector3(0f, size.y * 0.45f, size.z * 0.5f + 0.003f),
                 new Vector3(size.x * 0.55f, size.y * 0.3f, 0.004f), label, null, false);
         }
@@ -624,33 +615,6 @@ namespace ProjetoCarta.NoirEnv
             Solid(t, new Vector3(0f, 0.9f, 0f), new Vector3(0.4f, 1.8f, 0.4f));
         }
 
-        private static void CoatRack(Transform t, float k)
-        {
-            Material wood = EnvMat.Lit("env_wood_panel", Vector2.one, new Color(0.28f, 0.17f, 0.1f), 0.4f);
-            Material felt = EnvMat.Lit("env_plaster", Vector2.one, new Color(0.13f, 0.12f, 0.11f), 0.15f);
-            Material coat = EnvMat.Lit(null, Vector2.one, new Color(0.14f, 0.12f, 0.1f), 0.12f);
-            Part(t, "Haste", PrimitiveType.Cylinder, new Vector3(0f, 0.95f, 0f), new Vector3(0.05f, 0.95f, 0.05f), wood);
-            Part(t, "Pomo", PrimitiveType.Sphere, new Vector3(0f, 1.92f, 0f), Vector3.one * 0.08f, wood);
-            for (int i = 0; i < 3; i++)
-                Part(t, "Pe", PrimitiveType.Cube, new Vector3(0f, 0.04f, 0f), new Vector3(0.05f, 0.04f, 0.55f), wood, new Vector3(0f, i * 60f, 0f));
-            for (int i = 0; i < 4; i++)
-            {
-                float a = i * 90f + 45f;
-                Vector3 dir = Quaternion.Euler(0f, a, 0f) * Vector3.forward;
-                Part(t, "Gancho", PrimitiveType.Cube, new Vector3(0f, 1.78f, 0f) + dir * 0.1f, new Vector3(0.025f, 0.025f, 0.2f), wood, new Vector3(-30f, a, 0f));
-            }
-            // Chapeu fedora num gancho e sobretudo escuro pendurado pela gola no gancho da frente.
-            Lathe(t, "Chapeu", new Vector3(-0.12f, 1.86f, -0.12f), new[] { new Vector2(0.2f, 0f), new Vector2(0.21f, 0.015f), new Vector2(0.11f, 0.02f), new Vector2(0.11f, 0.12f), new Vector2(0.06f, 0.15f) }, felt);
-            Part(t, "Gola", PrimitiveType.Cube, new Vector3(0f, 1.7f, 0.13f), new Vector3(0.16f, 0.1f, 0.08f), coat, new Vector3(-10f, 0f, 0f));
-            Part(t, "Ombros", PrimitiveType.Capsule, new Vector3(0f, 1.6f, 0.13f), new Vector3(0.14f, 0.2f, 0.12f), coat, new Vector3(0f, 0f, 90f));
-            Part(t, "Sobretudo", PrimitiveType.Cube, new Vector3(0f, 1.2f, 0.14f), new Vector3(0.36f, 0.72f, 0.1f), coat, new Vector3(-3f, 0f, 0f));
-            Part(t, "Sobretudo_Barra", PrimitiveType.Cube, new Vector3(0f, 0.72f, 0.16f), new Vector3(0.42f, 0.3f, 0.09f), coat, new Vector3(-4f, 0f, 0f));
-            for (int s = -1; s <= 1; s += 2)
-                Part(t, "Manga", PrimitiveType.Capsule, new Vector3(s * 0.19f, 1.25f, 0.13f), new Vector3(0.1f, 0.33f, 0.1f), coat, new Vector3(0f, 0f, s * 4f));
-            t.localScale = Vector3.one * k;
-            Solid(t, new Vector3(0f, 1f, 0f), new Vector3(0.5f, 2f, 0.5f));
-        }
-
         private static void Radiator(Transform t, float length, Color c)
         {
             Material m = EnvMat.Lit("env_metal", Vector2.one, c, 0.4f, 0.4f);
@@ -679,39 +643,6 @@ namespace ProjetoCarta.NoirEnv
             Solid(t, new Vector3(0f, 0.75f, 0f), new Vector3(0.45f, 1.5f, 0.45f));
         }
 
-        private static void TrashBin(Transform t, System.Random rng, Color c)
-        {
-            Material m = EnvMat.Lit("env_metal", Vector2.one, c, 0.4f, 0.5f);
-            Material paper = EnvMat.Lit(null, Vector2.one, new Color(0.82f, 0.8f, 0.72f), 0.1f);
-            Lathe(t, "Cesto", Vector3.zero, new[] { new Vector2(0.001f, 0.01f), new Vector2(0.17f, 0.01f), new Vector2(0.2f, 0.45f) }, m);
-            for (int i = 0; i < 4; i++)
-                Part(t, "Bolinha", PrimitiveType.Sphere, new Vector3((float)rng.NextDouble() * 0.14f - 0.07f, 0.38f + i * 0.03f, (float)rng.NextDouble() * 0.14f - 0.07f), Vector3.one * 0.09f, paper);
-            Part(t, "Bolinha_Chao", PrimitiveType.Sphere, new Vector3(0.32f, 0.045f, 0.18f), Vector3.one * 0.09f, paper);
-            t.localScale = Vector3.one * 1.2f;
-        }
-
-        private static void Plant(Transform t, System.Random rng, float k)
-        {
-            Material pot = EnvMat.Lit("env_plaster", Vector2.one, new Color(0.45f, 0.24f, 0.16f), 0.2f);
-            Material soil = EnvMat.Lit(null, Vector2.one, new Color(0.08f, 0.06f, 0.04f), 0.05f);
-            Material leaf = EnvMat.Lit("env_plaster", Vector2.one, new Color(0.11f, 0.2f, 0.1f), 0.45f);
-            Material stem = EnvMat.Lit(null, Vector2.one, new Color(0.18f, 0.14f, 0.08f), 0.2f);
-            Lathe(t, "Vaso", Vector3.zero, new[] { new Vector2(0.001f, 0f), new Vector2(0.17f, 0f), new Vector2(0.23f, 0.45f), new Vector2(0.25f, 0.48f) }, pot);
-            Part(t, "Terra", PrimitiveType.Cylinder, new Vector3(0f, 0.43f, 0f), new Vector3(0.42f, 0.01f, 0.42f), soil);
-            Part(t, "Caule", PrimitiveType.Cylinder, new Vector3(0f, 0.9f, 0f), new Vector3(0.03f, 0.48f, 0.03f), stem);
-            for (int i = 0; i < 16; i++)
-            {
-                float a = i * 137.5f;
-                float h = 0.55f + i * 0.055f;
-                float r = 0.12f + (float)rng.NextDouble() * 0.12f;
-                Vector3 dir = Quaternion.Euler(0f, a, 0f) * Vector3.forward;
-                Part(t, "Folha", PrimitiveType.Sphere, new Vector3(0f, h, 0f) + dir * r, new Vector3(0.11f, 0.03f, 0.3f), leaf,
-                    new Vector3(-20f - (float)rng.NextDouble() * 25f, a, 0f));
-            }
-            t.localScale = Vector3.one * k;
-            Solid(t, new Vector3(0f, 0.7f, 0f), new Vector3(0.5f, 1.4f, 0.5f));
-        }
-
         private static void DecanterSet(Transform t, System.Random rng)
         {
             Material tray = EnvMat.Lit("env_metal", Vector2.one, new Color(0.7f, 0.6f, 0.4f), 0.7f, 0.9f);
@@ -732,33 +663,11 @@ namespace ProjetoCarta.NoirEnv
             Part(t, "Tampo", PrimitiveType.Cube, new Vector3(0f, 0.7f, 0f), new Vector3(0.7f, 0.04f, 0.5f), wood);
             for (int i = 0; i < 4; i++)
                 Part(t, "Perna", PrimitiveType.Cube, new Vector3((i % 2 == 0 ? -1 : 1) * 0.3f, 0.34f, (i < 2 ? -1 : 1) * 0.2f), new Vector3(0.045f, 0.68f, 0.045f), wood);
-            // Biblia, vela e copo d'agua.
+            // Biblia.
             Material book = EnvMat.Lit("env_plaster", Vector2.one, new Color(0.08f, 0.07f, 0.06f), 0.35f);
             Part(t, "Biblia", PrimitiveType.Cube, new Vector3(-0.1f, 0.745f, 0f), new Vector3(0.2f, 0.05f, 0.27f), book, new Vector3(0f, 12f, 0f));
-            Part(t, "Vela", PrimitiveType.Cylinder, new Vector3(0.2f, 0.79f, 0.08f), new Vector3(0.05f, 0.07f, 0.05f), EnvMat.Lit(null, Vector2.one, new Color(0.85f, 0.82f, 0.7f), 0.2f));
-            Part(t, "Chama", PrimitiveType.Sphere, new Vector3(0.2f, 0.875f, 0.08f), new Vector3(0.02f, 0.04f, 0.02f), EnvMat.Glow(null, new Color(1f, 0.6f, 0.25f), 3f), null, false);
             t.localScale = Vector3.one * k;
             Solid(t, new Vector3(0f, 0.36f, 0f), new Vector3(0.72f, 0.72f, 0.52f));
-        }
-
-        private static void Gurney(Transform t, float k)
-        {
-            Material metal = EnvMat.Lit("env_metal", Vector2.one, new Color(0.6f, 0.62f, 0.6f), 0.55f, 0.8f);
-            Material sheet = EnvMat.Lit(null, Vector2.one, new Color(0.62f, 0.66f, 0.64f), 0.05f);
-            Material strap = EnvMat.Lit("env_plaster", Vector2.one, new Color(0.22f, 0.14f, 0.08f), 0.3f);
-            Part(t, "Estrado", PrimitiveType.Cube, new Vector3(0f, 0.72f, 0f), new Vector3(0.7f, 0.04f, 1.95f), metal);
-            for (int i = 0; i < 4; i++)
-            {
-                Vector3 p = new((i % 2 == 0 ? -1 : 1) * 0.3f, 0.36f, (i < 2 ? -1 : 1) * 0.88f);
-                Part(t, "Perna", PrimitiveType.Cylinder, p, new Vector3(0.035f, 0.36f, 0.035f), metal);
-                Part(t, "Roda", PrimitiveType.Cylinder, new Vector3(p.x, 0.05f, p.z), new Vector3(0.1f, 0.02f, 0.1f), strap, new Vector3(0f, 0f, 90f));
-            }
-            Part(t, "Colchao", PrimitiveType.Cube, new Vector3(0f, 0.8f, 0f), new Vector3(0.66f, 0.12f, 1.88f), sheet);
-            Part(t, "Travesseiro", PrimitiveType.Cube, new Vector3(0f, 0.9f, -0.75f), new Vector3(0.5f, 0.08f, 0.3f), sheet);
-            for (int i = 0; i < 3; i++)
-                Part(t, "Correia", PrimitiveType.Cube, new Vector3(0f, 0.865f, -0.3f + i * 0.5f), new Vector3(0.7f, 0.015f, 0.08f), strap);
-            t.localScale = Vector3.one * k;
-            Solid(t, new Vector3(0f, 0.45f, 0f), new Vector3(0.72f, 0.9f, 1.97f));
         }
 
         private static void ElectricPanel(Transform t, Frame f, Material metal)
@@ -848,23 +757,6 @@ namespace ProjetoCarta.NoirEnv
 
         // ------------------------------------------------------------------ parede
 
-        private static void WallClock(Transform t, float d, Material rim, Material hands)
-        {
-            Material face = EnvMat.Lit(null, Vector2.one, new Color(0.86f, 0.82f, 0.7f), 0.3f);
-            Material ink = EnvMat.Lit(null, Vector2.one, new Color(0.08f, 0.07f, 0.06f), 0.3f);
-            Part(t, "Aro", PrimitiveType.Cylinder, new Vector3(0f, 0f, 0.04f), new Vector3(d, 0.04f, d), rim, new Vector3(90f, 0f, 0f));
-            Part(t, "Mostrador", PrimitiveType.Cylinder, new Vector3(0f, 0f, 0.082f), new Vector3(d * 0.86f, 0.003f, d * 0.86f), face, new Vector3(90f, 0f, 0f), false);
-            for (int i = 0; i < 12; i++)
-            {
-                Quaternion q = Quaternion.Euler(0f, 0f, i * 30f);
-                Part(t, "Marca", PrimitiveType.Cube, q * new Vector3(0f, d * 0.36f, 0f) + new Vector3(0f, 0f, 0.087f), new Vector3(0.012f, i % 3 == 0 ? 0.06f : 0.03f, 0.004f), ink, new Vector3(0f, 0f, i * 30f), false);
-            }
-            // Parado nas 11h55: o tempo que falta.
-            Part(t, "Ponteiro_Hora", PrimitiveType.Cube, Quaternion.Euler(0f, 0f, 32f) * new Vector3(0f, d * 0.12f, 0f) + new Vector3(0f, 0f, 0.092f), new Vector3(0.02f, d * 0.24f, 0.004f), ink, new Vector3(0f, 0f, 32f), false);
-            Part(t, "Ponteiro_Min", PrimitiveType.Cube, Quaternion.Euler(0f, 0f, 30f) * new Vector3(0f, d * 0.17f, 0f) + new Vector3(0f, 0f, 0.096f), new Vector3(0.012f, d * 0.34f, 0.004f), ink, new Vector3(0f, 0f, 30f), false);
-            Part(t, "Eixo", PrimitiveType.Cylinder, new Vector3(0f, 0f, 0.1f), new Vector3(0.03f, 0.006f, 0.03f), hands, new Vector3(90f, 0f, 0f), false);
-        }
-
         /// <summary>Quadro na parede. kind: 0 paisagem, 1 retrato, 2 diploma, 3 aviso datilografado.</summary>
         private static void Picture(Transform t, Vector2 size, int kind, Material frame)
         {
@@ -907,13 +799,9 @@ namespace ProjetoCarta.NoirEnv
                             else c = Color.Lerp(new Color(0.1f, 0.12f, 0.07f), new Color(0.22f, 0.2f, 0.12f), v / hill);
                             break;
                         case 1:
-                            // Retrato sobre fundo escuro: busto e cabeca em silhueta iluminada de lado.
-                            float dx = u - 0.5f;
-                            bool head = dx * dx / 0.028f + (v - 0.62f) * (v - 0.62f) / 0.034f < 1f;
-                            bool body = v < 0.42f && Mathf.Abs(dx) < 0.18f + (0.42f - v) * 0.9f;
-                            c = new Color(0.12f, 0.09f, 0.07f) + new Color(0.08f, 0.05f, 0.03f) * (1f - Mathf.Abs(dx) * 2f);
-                            if (head) c = Color.Lerp(new Color(0.55f, 0.4f, 0.3f), new Color(0.2f, 0.14f, 0.1f), u);
-                            if (body) c = Color.Lerp(new Color(0.16f, 0.15f, 0.16f), new Color(0.05f, 0.05f, 0.06f), u);
+                            // Retrato: so uma cor chapada, preto acinzentado, sem desenhar a pessoa.
+                            c = new Color(0.07f, 0.07f, 0.075f);
+                            n = 0f;
                             break;
                         case 2:
                             // Diploma: papel envelhecido, titulo, linhas de texto e selo vermelho.

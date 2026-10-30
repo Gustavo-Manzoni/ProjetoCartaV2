@@ -49,7 +49,8 @@ namespace ProjetoCarta.NoirUI
         public Button Button => button;
         public bool IsMenuStyle => menuStyle;
 
-        private Color Accent => danger ? NoirTheme.Blood : NoirTheme.Amber;
+        private static readonly Color HoverWhite = new Color32(246, 243, 236, 255);
+        private Color Accent => danger ? NoirTheme.Blood : HoverWhite;
 
         private void Awake()
         {
@@ -176,13 +177,13 @@ namespace ProjetoCarta.NoirUI
         {
             visual = rect;
             glow = MakeImage("NoirGlow", transform, "noir_glow", 0f);
-            glow.color = NoirTheme.WithAlpha(NoirTheme.Amber, 0f);
-            frame = MakeImage("NoirFrame", transform, "noir_btn_normal", 14f);
+            glow.color = NoirTheme.WithAlpha(HoverWhite, 0f);
+            frame =MakeImage("NoirFrame", transform, "noir_btn_normal", 14f);
             frame.type = Image.Type.Sliced;
             frame.pixelsPerUnitMultiplier = 1.4f;
             marker = MakeImage("NoirMarker", transform, "noir_glow", 0f);
-            marker.color = NoirTheme.WithAlpha(NoirTheme.Amber, 0f);
-            ink = MakeImage("NoirInk", transform, "noir_ink", 0f);
+            marker.color = NoirTheme.WithAlpha(HoverWhite, 0f);
+            ink =MakeImage("NoirInk", transform, "noir_ink", 0f);
             ink.color = NoirTheme.WithAlpha(NoirTheme.Paper, 0f);
 
             Vector2 size = rect.rect.size;
@@ -296,7 +297,7 @@ namespace ProjetoCarta.NoirUI
                 marker.color = NoirTheme.WithAlpha(accent, on ? 1f : 0f);
                 Vector2 p = marker.rectTransform.anchoredPosition;
                 marker.rectTransform.anchoredPosition = new Vector2(markerX, p.y);
-                TweenLabels(on, true, danger ? new Color(1f, 0.55f, 0.52f) : NoirTheme.Amber, 4f);
+                TweenLabels(on, true, danger ? new Color(1f, 0.55f, 0.52f) : HoverWhite, 4f);
                 return;
             }
 
@@ -310,7 +311,7 @@ namespace ProjetoCarta.NoirUI
             marker.DOColor(NoirTheme.WithAlpha(accent, on ? 1f : 0f), t).SetUpdate(true);
             marker.rectTransform.DOAnchorPosX(markerX, t * 1.5f).SetEase(Ease.OutBack).SetUpdate(true);
 
-            TweenLabels(on, instant, danger ? new Color(1f, 0.55f, 0.52f) : NoirTheme.Amber, 4f);
+            TweenLabels(on, instant, danger ? new Color(1f, 0.55f, 0.52f) : HoverWhite, 4f);
         }
 
         private void ApplyPanel(bool on, bool instant)
@@ -353,14 +354,6 @@ namespace ProjetoCarta.NoirUI
         {
             if (playSounds)
                 NoirAudio.Play(danger ? NoirSfx.Back : NoirSfx.Click, 0.9f);
-
-            ink.rectTransform.DOKill();
-            ink.DOKill();
-            ink.rectTransform.localScale = Vector3.one * 0.3f;
-            ink.rectTransform.localRotation = Quaternion.Euler(0, 0, UnityEngine.Random.Range(0f, 360f));
-            ink.color = NoirTheme.WithAlpha(menuStyle ? Accent : (highlighted ? NoirTheme.Ink : NoirTheme.Paper), 0.55f);
-            ink.rectTransform.DOScale(1.4f, 0.45f).SetEase(Ease.OutCubic).SetUpdate(true);
-            ink.DOFade(0f, 0.45f).SetUpdate(true);
 
             if (NoirAtmosphere.Exists)
                 NoirAtmosphere.Get().Pulse(menuStyle ? 0.12f : 0.06f);

@@ -99,15 +99,9 @@ namespace ProjetoCarta.NoirUI
             divider.SetParent(transform, false);
             PlaceDivider();
 
-            Sprite eyeSprite = NoirTheme.GetSprite("noir_eye");
-            Image eyeImage = NewImage("Olho", eyeSprite, NoirTheme.WithAlpha(NoirTheme.Paper, 0.92f));
-            eyeImage.preserveAspect = true;
-            eye = eyeImage.rectTransform;
-            eye.anchorMin = eye.anchorMax = new Vector2(0.5f, 0.5f);
-            eye.sizeDelta = new Vector2(EyeSize, EyeSize);
-
+            // Sem o olho no meio: o divisor e so o traco (eye fica null, o resto do codigo ja checa).
             EnsureLineSprites();
-            float inner = EyeSize * 0.5f + EyeGap;
+            float inner = 0f;
             Line("Traco_Esquerdo", lineLeft, new Vector2(0f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, -inner));
             Line("Traco_Direito", lineRight, new Vector2(0.5f, 0.5f), new Vector2(1f, 0.5f), new Vector2(inner, 0f));
         }

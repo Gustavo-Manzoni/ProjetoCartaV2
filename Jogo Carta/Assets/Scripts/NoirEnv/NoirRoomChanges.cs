@@ -95,9 +95,7 @@ namespace ProjetoCarta.NoirEnv
                 p.Rotate(Vector3.forward, Random.Range(5f, 13f) * (Random.value < 0.5f ? -1f : 1f), Space.Self);
             }
 
-            if (!footprintsDone && visits >= 3 && Random.value < 0.6f)
-                StartCoroutine(FootprintsAfterBlink());
-            else if (!portraitDone && visits >= 4 && Random.value < 0.5f)
+            if (!portraitDone && visits >= 4 && Random.value < 0.5f)
                 TurnPortrait();
         }
 
